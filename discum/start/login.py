@@ -28,28 +28,32 @@ class Login:
         if "." in token:
             self.userID = base64.b64decode(token.split(".")[0]).decode("utf-8")
         self.editedS = Wrapper.editedReqSession(
-            s, {"remove": ["Authorization", "X-Fingerprint"]}
-        )
+            s, {"remove": ["Authorization", "X-Fingerprint"]})
 
     def getXFingerprint(self, generateIfNone):
         url = self.discord + "experiments"
-        headerMods = {"update": {"X-Context-Properties": ContextProperties.get("/app")}}
-        reqxfinger = Wrapper.sendRequest(
-            self.editedS, "get", url, headerModifications=headerMods, log=self.log
-        )
+        headerMods = {
+            "update": {
+                "X-Context-Properties": ContextProperties.get("/app")
+            }
+        }
+        reqxfinger = Wrapper.sendRequest(self.editedS,
+                                         "get",
+                                         url,
+                                         headerModifications=headerMods,
+                                         log=self.log)
         if generateIfNone and not reqxfinger:
             snowflake = self.userID if self.userID else calculateNonce()
             randomPart = "".join(
-                random.choice(string.ascii_letters + string.digits) for _ in range(27)
-            )
+                random.choice(string.ascii_letters + string.digits)
+                for _ in range(27))
             xfingerprint = "{}.{}".format(snowflake, randomPart)
         else:
             xfingerprint = reqxfinger.json().get("fingerprint")
         return xfingerprint
 
-    def login(
-        self, email, password, undelete, captcha, source, gift_code_sku_id, secret, code
-    ):
+    def login(self, email, password, undelete, captcha, source,
+              gift_code_sku_id, secret, code):
         url = self.discord + "auth/login"
         self.xfingerprint = self.getXFingerprint(True)
         self.editedS.headers.update({"X-Fingerprint": self.xfingerprint})
@@ -61,12 +65,16 @@ class Login:
             "login_source": source,
             "gift_code_sku_id": gift_code_sku_id,
         }
-        response = Wrapper.sendRequest(self.editedS, "post", url, body, log=self.log)
+        response = Wrapper.sendRequest(self.editedS,
+                                       "post",
+                                       url,
+                                       body,
+                                       log=self.log)
         result = response.json()
-        if (
-            result.get("mfa") == True and result.get("sms") == False
-        ):  # sms login not implemented yet
-            time.sleep(2)  # 2 seconds is minimal, don't want to look too automated
+        if (result.get("mfa") == True and result.get("sms")
+                == False):  # sms login not implemented yet
+            time.sleep(
+                2)  # 2 seconds is minimal, don't want to look too automated
             ticket = result["ticket"]
             if secret != "":
                 code = TOTP(secret).generateTOTP()
@@ -78,9 +86,11 @@ class Login:
                 "login_source": source,
                 "gift_code_sku_id": gift_code_sku_id,
             }
-            totpResponse = Wrapper.sendRequest(
-                self.editedS, "post", totpUrl, totpBody, log=self.log
-            )
+            totpResponse = Wrapper.sendRequest(self.editedS,
+                                               "post",
+                                               totpUrl,
+                                               totpBody,
+                                               log=self.log)
             return totpResponse, self.xfingerprint
         else:
             return response, self.xfingerprint

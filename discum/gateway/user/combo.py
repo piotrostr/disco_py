@@ -21,18 +21,23 @@ class UserCombo(object):
                 name = emoji
                 ID = None
             emojiDict = {}
-            emojiDict.update({"id": ID, "name": name, "animated": animatedEmoji})
+            emojiDict.update({
+                "id": ID,
+                "name": name,
+                "animated": animatedEmoji
+            })
         else:  # None
             emojiDict = None
         return emojiDict
 
     def constructActivitiesList(
-        self, updates={}, remove=None
-    ):  # update is a bit too raw, will fix later
+            self,
+            updates={},
+            remove=None):  # update is a bit too raw, will fix later
         currentActivities = self.gatewayobj.session.userSettings["activities"]
         activities = {4: {}, 0: {}, 1: {}, 2: {}, 3: {}}
         for (
-            i
+                i
         ) in currentActivities:  # all this does is fix the format of current activities
             if remove != i:  # this helps remove activities
                 activities[i] = dict(currentActivities[i])
@@ -49,16 +54,18 @@ class UserCombo(object):
                         emojiStr = None
                         animatedEmoji = False
                     activities[i]["emoji"] = self.constructEmojiDict(
-                        emojiStr, animatedEmoji
-                    )
+                        emojiStr, animatedEmoji)
         for i in updates:  # this adds activities
             activities[i] = updates[i]
-        activitiesList = [activities[j] for j in activities if len(activities[j]) > 0]
+        activitiesList = [
+            activities[j] for j in activities if len(activities[j]) > 0
+        ]
         return activitiesList
 
     def setStatus(self, status):
         if status != self.gatewayobj.session.userSettings["status"]:
-            self.gatewayobj.request.setStatus(status, self.constructActivitiesList())
+            self.gatewayobj.request.setStatus(status,
+                                              self.constructActivitiesList())
 
     def setPlayingStatus(self, game):  # will add metadata later
         currentStatus = self.gatewayobj.session.userSettings["status"]
@@ -66,18 +73,18 @@ class UserCombo(object):
             0: {
                 "type": 0,
                 "name": game,
-                "timestamps": {"start": self.getCurrentUnixTs()},
+                "timestamps": {
+                    "start": self.getCurrentUnixTs()
+                },
             }
         }
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(updates=updates)
-        )
+            currentStatus, self.constructActivitiesList(updates=updates))
 
     def removePlayingStatus(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(remove=0)
-        )
+            currentStatus, self.constructActivitiesList(remove=0))
 
     def setStreamingStatus(self, stream, url):  # will add metadata later
         currentStatus = self.gatewayobj.session.userSettings["status"]
@@ -86,18 +93,18 @@ class UserCombo(object):
                 "type": 1,
                 "name": stream,
                 "url": url,
-                "timestamps": {"start": self.getCurrentUnixTs()},
+                "timestamps": {
+                    "start": self.getCurrentUnixTs()
+                },
             }
         }
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(updates=updates)
-        )
+            currentStatus, self.constructActivitiesList(updates=updates))
 
     def removeStreamingStatus(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(remove=1)
-        )
+            currentStatus, self.constructActivitiesList(remove=1))
 
     def setListeningStatus(self, song):  # will add metadata later
         currentStatus = self.gatewayobj.session.userSettings["status"]
@@ -105,18 +112,18 @@ class UserCombo(object):
             2: {
                 "type": 2,
                 "name": song,
-                "timestamps": {"start": self.getCurrentUnixTs()},
+                "timestamps": {
+                    "start": self.getCurrentUnixTs()
+                },
             }
         }
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(updates=updates)
-        )
+            currentStatus, self.constructActivitiesList(updates=updates))
 
     def removeListeningStatus(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(remove=2)
-        )
+            currentStatus, self.constructActivitiesList(remove=2))
 
     def setWatchingStatus(self, show):  # will add metadata later
         currentStatus = self.gatewayobj.session.userSettings["status"]
@@ -124,18 +131,18 @@ class UserCombo(object):
             3: {
                 "type": 3,
                 "name": show,
-                "timestamps": {"start": self.getCurrentUnixTs()},
+                "timestamps": {
+                    "start": self.getCurrentUnixTs()
+                },
             }
         }
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(updates=updates)
-        )
+            currentStatus, self.constructActivitiesList(updates=updates))
 
     def removeWatchingStatus(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(remove=3)
-        )
+            currentStatus, self.constructActivitiesList(remove=3))
 
     def setCustomStatus(self, customstatus, emoji, animatedEmoji):
         currentStatus = self.gatewayobj.session.userSettings["status"]
@@ -148,14 +155,12 @@ class UserCombo(object):
             }
         }
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(updates=updates)
-        )
+            currentStatus, self.constructActivitiesList(updates=updates))
 
     def removeCustomStatus(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]
         self.gatewayobj.request.setStatus(
-            currentStatus, self.constructActivitiesList(remove=4)
-        )
+            currentStatus, self.constructActivitiesList(remove=4))
 
     def clearActivities(self):
         currentStatus = self.gatewayobj.session.userSettings["status"]

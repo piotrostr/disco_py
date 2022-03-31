@@ -5,7 +5,7 @@ import base64
 
 
 class Client_UUID(
-    object
+        object
 ):  # Huge thanks to github user fweak for helping me figure out the mystery of the client_uuid. made some discord "science" notes here: https://docs.google.com/document/d/1b5aDx7S1iLHoeb6B56izZakbXItA84gUjFzK-0OBwy0
     __slots__ = ["userID", "randomPrefix", "creationTime", "eventNum", "UUID"]
 
@@ -13,11 +13,9 @@ class Client_UUID(
         self.userID = int(userID)
         num = int(4294967296 * random.random())
         self.randomPrefix = num if num <= 2147483647 else num - 4294967296
-        self.creationTime = (
-            int(time.mktime(datetime.datetime.now().timetuple()) * 1000)
-            if creationTime == "now"
-            else creationTime
-        )
+        self.creationTime = (int(
+            time.mktime(datetime.datetime.now().timetuple()) *
+            1000) if creationTime == "now" else creationTime)
         self.eventNum = eventNum
         self.UUID = ""
 
@@ -32,17 +30,16 @@ class Client_UUID(
         buf = bytearray(struct.pack("24x"))
         buf[0:4] = struct.pack(
             "<i",
-            userID % 4294967296
-            if userID % 4294967296 <= 2147483647
-            else userID % 4294967296 - 2147483647,
+            userID % 4294967296 if userID % 4294967296 <= 2147483647 else
+            userID % 4294967296 - 2147483647,
         )
         buf[4:8] = struct.pack("<i", userID >> 32)
         buf[8:12] = struct.pack("<i", self.randomPrefix)
         buf[12:16] = struct.pack(
             "<i",
-            self.creationTime % 4294967296
-            if self.creationTime % 4294967296 <= 2147483647
-            else self.creationTime % 4294967296 - 2147483647,
+            self.creationTime %
+            4294967296 if self.creationTime % 4294967296 <= 2147483647 else
+            self.creationTime % 4294967296 - 2147483647,
         )
         buf[16:20] = struct.pack("<i", self.creationTime >> 32)
         buf[20:24] = struct.pack("<i", eventNum)
@@ -54,14 +51,14 @@ class Client_UUID(
 
     def refresh(self, resetEventNum=True):
         self.randomPrefix = num if num <= 2147483647 else num - 4294967296
-        self.creationTime = (
-            int(time.mktime(datetime.datetime.now().timetuple()) * 1000)
-            if creationTime == "now"
-            else creationTime
-        )
+        self.creationTime = (int(
+            time.mktime(datetime.datetime.now().timetuple()) *
+            1000) if creationTime == "now" else creationTime)
         if resetEventNum:
             self.eventNum = 0
-        return self.calculate(eventNum="default", userID="default", increment=True)
+        return self.calculate(eventNum="default",
+                              userID="default",
+                              increment=True)
 
     @staticmethod
     def parse(client_uuid):
@@ -69,21 +66,16 @@ class Client_UUID(
         unpacked = []
         for i in range(6):
             unpacked.append(
-                struct.unpack("<i", decoded_client_uuid[4 * i : 4 * i + 4])[0]
-            )
+                struct.unpack("<i", decoded_client_uuid[4 * i:4 * i + 4])[0])
         UUIDdata = {}
         userIDguess = (unpacked[1] << 32) + unpacked[0]
-        UUIDdata["userID"] = repr(
-            userIDguess
-            if userIDguess % 4294967296 <= 2147483647
-            else userIDguess + 4294967296
-        )
+        UUIDdata["userID"] = repr(userIDguess if userIDguess %
+                                  4294967296 <= 2147483647 else userIDguess +
+                                  4294967296)
         UUIDdata["randomPrefix"] = unpacked[2]
         creationTimeGuess = (unpacked[4] << 32) + unpacked[3]
-        UUIDdata["creationTime"] = (
-            creationTimeGuess
-            if creationTimeGuess % 4294967296 <= 2147483647
-            else userIDguess + 4294967296
-        )
+        UUIDdata["creationTime"] = (creationTimeGuess if creationTimeGuess %
+                                    4294967296 <= 2147483647 else userIDguess +
+                                    4294967296)
         UUIDdata["eventNum"] = unpacked[5]
         return UUIDdata

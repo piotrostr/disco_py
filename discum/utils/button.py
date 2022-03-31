@@ -16,8 +16,7 @@ class Buttoner(object):
 
     def __init__(self, components):
         if type(components) in (list, tuple) and (
-            len(components) == 0 or isinstance(components[0], dict)
-        ):
+                len(components) == 0 or isinstance(components[0], dict)):
             self.components = list(dict(i) for i in components)
         else:
             raise ValueError("components must be a list of dicts.")
@@ -72,9 +71,11 @@ class Buttoner(object):
         return buttons
 
     # get attributes of a menu
-    def findMenu(
-        self, placeholder=None, customID=None, row=None, findFirst=False
-    ):  # placeholder, customID, row
+    def findMenu(self,
+                 placeholder=None,
+                 customID=None,
+                 row=None,
+                 findFirst=False):  # placeholder, customID, row
         menus = []
         # row
         if row != None:
@@ -90,7 +91,10 @@ class Buttoner(object):
                 if c["type"] == 3:
                     if self._check(
                         [placeholder, customID],
-                        [c.get("placeholder", "Make a selection"), c["custom_id"]],
+                        [
+                            c.get("placeholder", "Make a selection"),
+                            c["custom_id"]
+                        ],
                     ):
                         menus.append(dict(c))
                         if findFirst:
@@ -134,9 +138,13 @@ class Buttoner(object):
         emojiName=None,
         emojiID=None,
     ):
-        button = self.findButton(
-            label, customID, row, column, emojiName, emojiID, findFirst=True
-        )
+        button = self.findButton(label,
+                                 customID,
+                                 row,
+                                 column,
+                                 emojiName,
+                                 emojiID,
+                                 findFirst=True)
         if len(button) > 0:
             return {"component_type": 2, "custom_id": button[0]["custom_id"]}
         else:
@@ -161,12 +169,14 @@ class Buttoner(object):
                 "custom_id": menu[0]["custom_id"],
                 "values": [],
             }
-            for l, d, v, eN, eID in zip_longest(
-                labels, descriptions, values, emojiNames, emojiIDs
-            ):
-                dropdown = self.findDropdown(
-                    menu[0], label=l, description=d, value=v, emojiName=eN, emojiID=eID
-                )
+            for l, d, v, eN, eID in zip_longest(labels, descriptions, values,
+                                                emojiNames, emojiIDs):
+                dropdown = self.findDropdown(menu[0],
+                                             label=l,
+                                             description=d,
+                                             value=v,
+                                             emojiName=eN,
+                                             emojiID=eID)
                 if len(dropdown) > 0:
                     menuData["values"].append(dropdown[0]["value"])
             return menuData

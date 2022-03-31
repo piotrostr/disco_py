@@ -66,7 +66,10 @@ class RemoteAuth:
         user_agent,
         proxy_host=None,
         proxy_port=None,
-        log={"console": True, "file": False},
+        log={
+            "console": True,
+            "file": False
+        },
     ):
         self.user_agent = user_agent
         self.saveQrCode = True
@@ -94,7 +97,8 @@ class RemoteAuth:
             "Accept-Language": "en-US,en;q=0.9",
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
-            "Sec-WebSocket-Extensions": "permessage-deflate; client_max_window_bits",
+            "Sec-WebSocket-Extensions":
+            "permessage-deflate; client_max_window_bits",
             "User-Agent": self.user_agent,
         }  # more info: https://stackoverflow.com/a/40675547
 
@@ -105,8 +109,7 @@ class RemoteAuth:
             on_message=lambda ws, msg: self.on_message(ws, msg),
             on_error=lambda ws, msg: self.on_error(ws, msg),
             on_close=lambda ws, close_code, close_msg: self.on_close(
-                ws, close_code, close_msg
-            ),
+                ws, close_code, close_msg),
         )
         return ws
 
@@ -123,16 +126,13 @@ class RemoteAuth:
         avatarName = user_data[2]
         if avatarName == "0":
             avatar = "https://cdn.discordapp.com/embed/avatars/{}.png".format(
-                int(discriminator) % 5
-            )
+                int(discriminator) % 5)
         elif avatarName.startwith("a_"):
             avatar = "https://cdn.discordapp.com/avatars/{}/{}.gif".format(
-                userID, avatarName
-            )
+                userID, avatarName)
         else:
             avatar = "https://cdn.discordapp.com/avatars/{}/{}.png".format(
-                userID, avatarName
-            )
+                userID, avatarName)
         return userID, username, discriminator, avatar
 
     def on_open(self, ws):
@@ -148,17 +148,20 @@ class RemoteAuth:
             thread.start_new_thread(self._heartbeat, ())
             cert = self.public_key.exportKey()
             encoded_public_key = cert.decode("utf-8").replace("\n", "")[26:-24]
-            self.send(
-                {"op": self.OPCODE.INIT, "encoded_public_key": encoded_public_key}
-            )
+            self.send({
+                "op": self.OPCODE.INIT,
+                "encoded_public_key": encoded_public_key
+            })
         elif op == self.OPCODE.NONCE_PROOF:
             nonce = self.decrypt(response["encrypted_nonce"])
             digest = SHA256.new(nonce).digest()
-            nonce_proof = base64.urlsafe_b64encode(digest).decode("utf-8").rstrip("=")
+            nonce_proof = base64.urlsafe_b64encode(digest).decode(
+                "utf-8").rstrip("=")
             self.send({"op": self.OPCODE.NONCE_PROOF, "proof": nonce_proof})
         elif op == self.OPCODE.PENDING_REMOTE_INIT:
             self.fingerprint = response["fingerprint"]
-            self.qr_url = "https://discordapp.com/ra/{}".format(self.fingerprint)
+            self.qr_url = "https://discordapp.com/ra/{}".format(
+                self.fingerprint)
             self.qr_img = pyqrcode.create(self.qr_url, error="H")
             if self.saveQrCode:  # self.qr_img.show() wasn't working consistently
                 if isinstance(self.saveQrCode, str):
@@ -166,14 +169,12 @@ class RemoteAuth:
                 else:
                     fileLoc = self.fingerprint + ".png"
                 self.qr_img.png(fileLoc, scale=10)
-                print(
-                    "QR code image for {} saved in {}".format(self.fingerprint, fileLoc)
-                )
+                print("QR code image for {} saved in {}".format(
+                    self.fingerprint, fileLoc))
         elif op == self.OPCODE.PENDING_FINISH:
             user_payload = self.decrypt(response["encrypted_user_payload"])
             userID, username, discriminator, avatar = self.parseUserPayload(
-                user_payload
-            )
+                user_payload)
             self.userData = {
                 "id": userID,
                 "username": username,
@@ -181,11 +182,12 @@ class RemoteAuth:
                 "avatar": avatar,
             }
         elif response["op"] == self.OPCODE.FINISH:
-            self.token = self.decrypt(response["encrypted_token"]).decode("utf-8")
+            self.token = self.decrypt(
+                response["encrypted_token"]).decode("utf-8")
         if self.interval == None:
             Logger.log("[ra] Connection failed.", None, self.log)
             self.close()
-        thread.start_new_thread(self._response_loop, (response,))
+        thread.start_new_thread(self._response_loop, (response, ))
 
     def on_error(self, ws, error):
         Logger.log("[ra] < {}".format(error), LogLevel.WARNING, self.log)
@@ -241,13 +243,15 @@ class RemoteAuth:
     def removeCommand(self, func, exactMatch=True, allMatches=False):
         try:
             if exactMatch:
-                self._after_message_hooks.index(func)  # for raising the value error
+                self._after_message_hooks.index(
+                    func)  # for raising the value error
                 if allMatches:
                     self._after_message_hooks = [
                         i for i in self._after_message_hooks if i != func
                     ]
                 else:  # simply remove first found
-                    del self._after_message_hooks[self._after_message_hooks.index(func)]
+                    del self._after_message_hooks[
+                        self._after_message_hooks.index(func)]
             else:
                 commandsCopy = [
                     i if callable(i) else i["function"]
@@ -257,15 +261,15 @@ class RemoteAuth:
                 if allMatches:
                     self._after_message_hooks = [
                         i
-                        for (i, j) in zip(self._after_message_hooks, commandsCopy)
+                        for (i,
+                             j) in zip(self._after_message_hooks, commandsCopy)
                         if j != func
                     ]
                 else:
                     del self._after_message_hooks[commandsCopy.index(func)]
         except ValueError:
-            Logger.log(
-                "{} not found in _after_message_hooks.".format(func), None, self.log
-            )
+            Logger.log("{} not found in _after_message_hooks.".format(func),
+                       None, self.log)
             pass
 
     def clearCommands(self):

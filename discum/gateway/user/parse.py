@@ -22,19 +22,22 @@ class UserParse(object):
         if len(activeCounter) > 0:
             importantdata["status"] = activeCounter["status"]
             importantdata["activities"] = {
-                i["type"]: i for i in activeCounter["activities"]
+                i["type"]: i
+                for i in activeCounter["activities"]
             }
             return importantdata
         elif len(allCounter) > 0:
             importantdata["status"] = allCounter["status"]
             importantdata["activities"] = {
-                j["type"]: j for j in allCounter["activities"]
+                j["type"]: j
+                for j in allCounter["activities"]
             }
             return importantdata
         elif len(sessionidCounter) > 0:
             importantdata["status"] = sessionidCounter["status"]
             importantdata["activities"] = {
-                k["type"]: k for k in sessionidCounter["activities"]
+                k["type"]: k
+                for k in sessionidCounter["activities"]
             }
             return importantdata
         else:

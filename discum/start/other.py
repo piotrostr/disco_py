@@ -1,5 +1,6 @@
 from ..RESTapiwrap import Wrapper
 
+
 # This file includes apis that run when your client starts but idk where to organize them
 # Maybe they'll get organized eventually, idk
 class Other:
@@ -19,9 +20,11 @@ class Other:
         headerMods = {
             "remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]
         }
-        return Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "get",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def getDetectables(self):
         url = self.discord + "applications/detectable"
@@ -40,9 +43,11 @@ class Other:
         headerMods = {
             "remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]
         }
-        return Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "get",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def getLibrary(self):
         url = self.discord + "users/@me/library"
@@ -53,7 +58,9 @@ class Other:
         headerMods = {
             "remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]
         }
-        res = Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        res = Wrapper.sendRequest(self.s,
+                                  "get",
+                                  url,
+                                  headerModifications=headerMods,
+                                  log=self.log)
         return res.json()

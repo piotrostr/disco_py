@@ -50,11 +50,13 @@ class GuildRequest(object):
             guild_ids = [guild_ids]
         data = {
             "op": self.gatewayobj.OPCODE.REQUEST_GUILD_MEMBERS,
-            "d": {"guild_id": guild_ids},
+            "d": {
+                "guild_id": guild_ids
+            },
         }
         if isinstance(
-            user_ids, list
-        ):  # there are 2 types of op8 that the client can send
+                user_ids,
+                list):  # there are 2 types of op8 that the client can send
             data["d"]["user_ids"] = user_ids
         else:
             data["d"]["query"] = query
@@ -73,9 +75,8 @@ class GuildRequest(object):
 	{"guild_id": "blah", "nonce": "blah", "type": 1, "offset": 30, "limit": 10}
 	"""
 
-    def searchSlashCommands(
-        self, guild_id, query, command_ids, applicationID, limit, offset, nonce, appType
-    ):
+    def searchSlashCommands(self, guild_id, query, command_ids, applicationID,
+                            limit, offset, nonce, appType):
         # nonce
         if nonce == "calculate":
             from ...utils.nonce import calculateNonce
@@ -87,7 +88,11 @@ class GuildRequest(object):
         # payload
         data = {
             "op": self.gatewayobj.OPCODE.REQUEST_APPLICATION_COMMANDS,
-            "d": {"guild_id": guild_id, "nonce": nonce, "type": 1},
+            "d": {
+                "guild_id": guild_id,
+                "nonce": nonce,
+                "type": 1
+            },
         }
 
         # application type
@@ -106,14 +111,12 @@ class GuildRequest(object):
         elif command_ids != None:
             if isinstance(command_ids, str):
                 command_ids = [command_ids]
-            data["d"].update(
-                {
-                    "applications": True,
-                    "offset": 0 if offset == None else offset,
-                    "command_ids": command_ids,
-                    "limit": limit,
-                }
-            )
+            data["d"].update({
+                "applications": True,
+                "offset": 0 if offset == None else offset,
+                "command_ids": command_ids,
+                "limit": limit,
+            })
         # case 3: get them all (with a limit)
         else:
             data["d"]["limit"] = limit

@@ -34,19 +34,16 @@ class TOTP:
 
     def generateTOTP(self):
         timecode = int(time.mktime(datetime.datetime.now().timetuple()) / 30)
-        hasher = hmac.new(
-            self.byte_secret(), self.int_to_bytestring(timecode), hashlib.sha1
-        )
+        hasher = hmac.new(self.byte_secret(), self.int_to_bytestring(timecode),
+                          hashlib.sha1)
         hmac_hash = bytearray(hasher.digest())
         offset = hmac_hash[-1] & 0xF
-        code = (
-            (hmac_hash[offset] & 0x7F) << 24
-            | (hmac_hash[offset + 1] & 0xFF) << 16
-            | (hmac_hash[offset + 2] & 0xFF) << 8
-            | (hmac_hash[offset + 3] & 0xFF)
-        )
+        code = ((hmac_hash[offset] & 0x7F) << 24
+                | (hmac_hash[offset + 1] & 0xFF) << 16
+                | (hmac_hash[offset + 2] & 0xFF) << 8
+                | (hmac_hash[offset + 3] & 0xFF))
         codelength = 6
-        str_code = str(code % 10 ** codelength)
+        str_code = str(code % 10**codelength)
         while len(str_code) < codelength:
             str_code = "0" + str_code
         return str_code

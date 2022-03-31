@@ -21,9 +21,12 @@ for i in range(len(tokenlist)):
         newBot = discum.Client(token=tokenlist[i], build_num=build_num)
         newBot.s.cookies.update(clients[0].s.cookies)
         clients.append(newBot)
-    clients[i].gateway.command(
-        {"function": closeAfterReadySupp, "params": {"bot": clients[i]}}
-    )  # add closeAfterReadySupp to each bot
+    clients[i].gateway.command({
+        "function": closeAfterReadySupp,
+        "params": {
+            "bot": clients[i]
+        }
+    })  # add closeAfterReadySupp to each bot
 
 # now for the fun part
 # we use threading to make it run fast. You can use multiprocessing or subprocess if you'd like to instead. This is just one implementation.
@@ -41,8 +44,9 @@ results = [None] * num_clients
 
 for i in range(num_clients):
     threads[i] = threading.Thread(
-        target=gatewayRunner, args=(clients[i], results, i)
-    )  # https://stackoverflow.com/a/6894023/14776493
+        target=gatewayRunner,
+        args=(clients[i], results,
+              i))  # https://stackoverflow.com/a/6894023/14776493
     threads[i].start()
 
 # results is a list containing all the client data (bot.gateway.session.user stuff)

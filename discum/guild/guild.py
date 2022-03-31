@@ -22,10 +22,10 @@ class Guild(object):
     """
 	invite codes / server info
 	"""
+
     # get guild info from invite code
-    def getInfoFromInviteCode(
-        self, inviteCode, with_counts, with_expiration, fromJoinGuildNav
-    ):
+    def getInfoFromInviteCode(self, inviteCode, with_counts, with_expiration,
+                              fromJoinGuildNav):
         url = self.discord + "invites/" + inviteCode
         if with_counts != None or with_expiration != None or fromJoinGuildNav:
             url += "?"
@@ -36,7 +36,8 @@ class Guild(object):
                 data["with_counts"] = with_counts
             if with_expiration != None:
                 data["with_expiration"] = with_expiration
-            url += "&".join("%s=%s" % (k, quote(repr(data[k]).lower())) for k in data)
+            url += "&".join("%s=%s" % (k, quote(repr(data[k]).lower()))
+                            for k in data)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     # just the join guild endpoint, default location mimics joining a guild from the ([+]Add a Server) button
@@ -57,7 +58,8 @@ class Guild(object):
                 {},
                 headerModifications={
                     "update": {
-                        "X-Context-Properties": ContextProperties.get(
+                        "X-Context-Properties":
+                        ContextProperties.get(
                             location,
                             guild_id=guild_id,
                             channel_id=channel_id,
@@ -75,7 +77,8 @@ class Guild(object):
                 {},
                 headerModifications={
                     "update": {
-                        "X-Context-Properties": ContextProperties.get("markdown")
+                        "X-Context-Properties":
+                        ContextProperties.get("markdown")
                     }
                 },
                 log=self.log,
@@ -110,7 +113,9 @@ class Guild(object):
             self.s,
             "put",
             url,
-            headerModifications={"update": {"X-Context-Properties": "e30="}},
+            headerModifications={"update": {
+                "X-Context-Properties": "e30="
+            }},
             log=self.log,
         )
 
@@ -149,7 +154,8 @@ class Guild(object):
             body,
             headerModifications={
                 "update": {
-                    "X-Context-Properties": ContextProperties.get("guild header")
+                    "X-Context-Properties":
+                    ContextProperties.get("guild header")
                 }
             },
             log=self.log,
@@ -172,41 +178,48 @@ class Guild(object):
         if with_counts != None:
             url += "?with_counts=" + repr(with_counts).lower()
         headerMods = {
-            "update": {"X-Track": self.s.headers.get("X-Super-Properties")},
+            "update": {
+                "X-Track": self.s.headers.get("X-Super-Properties")
+            },
             "remove": ["X-Super-Properties"],
         }
-        return Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "get",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def getGuildChannels(self, guildID):
         url = self.discord + "guilds/" + guildID + "/channels"
         headerMods = {
-            "update": {"X-Track": self.s.headers.get("X-Super-Properties")},
+            "update": {
+                "X-Track": self.s.headers.get("X-Super-Properties")
+            },
             "remove": ["X-Super-Properties"],
         }
-        return Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "get",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def getGuildRoles(self, guildID):
         url = self.discord + "guilds/" + guildID + "/roles"
         headerMods = {
-            "update": {"X-Track": self.s.headers.get("X-Super-Properties")},
+            "update": {
+                "X-Track": self.s.headers.get("X-Super-Properties")
+            },
             "remove": ["X-Super-Properties"],
         }
-        return Wrapper.sendRequest(
-            self.s, "get", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "get",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def getDiscoverableGuilds(self, offset, limit):
-        url = (
-            self.discord
-            + "discoverable-guilds?offset="
-            + repr(offset)
-            + "&limit="
-            + repr(limit)
-        )
+        url = (self.discord + "discoverable-guilds?offset=" + repr(offset) +
+               "&limit=" + repr(limit))
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getGuildRegions(self, guildID):
@@ -216,6 +229,7 @@ class Guild(object):
     """
 	server moderation and management
 	"""
+
     # create a guild
     def createGuild(self, name, icon, channels, systemChannelID, template):
         url = self.discord + "guilds"
@@ -245,19 +259,35 @@ class Guild(object):
             userID,
             quote(reason),
         )
-        headerMods = {"update": {"X-Audit-Log-Reason": reason}} if reason == "" else {}
-        return Wrapper.sendRequest(
-            self.s, "delete", url, headerModifications=headerMods, log=self.log
-        )
+        headerMods = {
+            "update": {
+                "X-Audit-Log-Reason": reason
+            }
+        } if reason == "" else {}
+        return Wrapper.sendRequest(self.s,
+                                   "delete",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     # ban a user
     def ban(self, guildID, userID, deleteMessagesDays, reason):
         url = self.discord + "guilds/%s/bans/%s" % (guildID, userID)
-        body = {"delete_message_days": str(deleteMessagesDays), "reason": reason}
-        headerMods = {"update": {"X-Audit-Log-Reason": reason}} if reason == "" else {}
-        return Wrapper.sendRequest(
-            self.s, "put", url, body, headerModifications=headerMods, log=self.log
-        )
+        body = {
+            "delete_message_days": str(deleteMessagesDays),
+            "reason": reason
+        }
+        headerMods = {
+            "update": {
+                "X-Audit-Log-Reason": reason
+            }
+        } if reason == "" else {}
+        return Wrapper.sendRequest(self.s,
+                                   "put",
+                                   url,
+                                   body,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def revokeBan(self, guildID, userID):
         url = self.discord + "guilds/" + guildID + "/bans/" + userID
@@ -279,7 +309,8 @@ class Guild(object):
     def getGuildIntegrations(self, guildID, include_applications):
         url = self.discord + "guilds/" + guildID + "/integrations"
         if include_applications != None:
-            url += "?include_applications=" + repr(include_applications).lower()
+            url += "?include_applications=" + repr(
+                include_applications).lower()
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getGuildTemplates(self, guildID):
@@ -310,13 +341,8 @@ class Guild(object):
 
     # get member verification data
     def getMemberVerificationData(self, guildID, with_guild, invite_code):
-        url = (
-            self.discord
-            + "guilds/"
-            + guildID
-            + "/member-verification?with_guild="
-            + str(with_guild).lower()
-        )
+        url = (self.discord + "guilds/" + guildID +
+               "/member-verification?with_guild=" + str(with_guild).lower())
         if invite_code != None:
             url += "&invite_code=" + invite_code
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
@@ -353,24 +379,14 @@ class Guild(object):
 
     # leave thread
     def leaveThread(self, threadID, location):
-        url = (
-            self.discord
-            + "channels/"
-            + threadID
-            + "/thread-members/@me?location="
-            + quote(location)
-        )
+        url = (self.discord + "channels/" + threadID +
+               "/thread-members/@me?location=" + quote(location))
         return Wrapper.sendRequest(self.s, "delete", url, log=self.log)
 
     # join thread
     def joinThread(self, threadID, location):
-        url = (
-            self.discord
-            + "channels/"
-            + threadID
-            + "/thread-members/@me?location="
-            + quote(location)
-        )
+        url = (self.discord + "channels/" + threadID +
+               "/thread-members/@me?location=" + quote(location))
         return Wrapper.sendRequest(self.s, "post", url, log=self.log)
 
     # archive thread
@@ -388,6 +404,7 @@ class Guild(object):
     """
 	other
 	"""
+
     # lookup school
     def lookupSchool(self, email, allowMultipleGuilds, useVerificationCode):
         url = self.discord + "guilds/automations/email-domain-lookup"
@@ -418,11 +435,10 @@ class Guild(object):
         return Wrapper.sendRequest(self.s, "post", url, body, log=self.log)
 
     def getSchoolHubGuilds(
-        self, hubID
+            self, hubID
     ):  # note, the "entity_id" returned in each entry is the guildID
-        url = (
-            self.discord + "channels/" + hubID + "/directory-entries"
-        )  # ik it says channels, but it's the hubID/"guildID".
+        url = (self.discord + "channels/" + hubID + "/directory-entries"
+               )  # ik it says channels, but it's the hubID/"guildID".
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getSchoolHubDirectoryCounts(
@@ -432,41 +448,34 @@ class Guild(object):
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def joinGuildFromSchoolHub(self, hubID, guildID):
-        url = (
-            self.discord
-            + "guilds/"
-            + guildID
-            + "/members/@me?lurker=false&directory_channel_id="
-            + hubID
-        )
+        url = (self.discord + "guilds/" + guildID +
+               "/members/@me?lurker=false&directory_channel_id=" + hubID)
         headerMods = {
             "update": {
-                "X-Context-Properties": ContextProperties.get("school hub guild")
+                "X-Context-Properties":
+                ContextProperties.get("school hub guild")
             }
         }
-        return Wrapper.sendRequest(
-            self.s, "put", url, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "put",
+                                   url,
+                                   headerModifications=headerMods,
+                                   log=self.log)
 
     def searchSchoolHub(self, hubID, query):
-        url = (
-            self.discord
-            + "channels/"
-            + hubID
-            + "/directory-entries/search?query="
-            + query
-        )
+        url = (self.discord + "channels/" + hubID +
+               "/directory-entries/search?query=" + query)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getMySchoolHubGuilds(
-        self, hubID
+            self, hubID
     ):  # or guilds you own that can potentially be added to the hub
         url = self.discord + "channels/" + hubID + "/directory-entries/list"
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def setSchoolHubGuildDetails(
-        self, hubID, guildID, description, directoryID
-    ):  # directoryID (int) is not a snowflake
+            self, hubID, guildID, description,
+            directoryID):  # directoryID (int) is not a snowflake
         url = self.discord + "channels/" + hubID + "/directory-entry/" + guildID
         body = {"description": description, "primary_category_id": directoryID}
         return Wrapper.sendRequest(self.s, "post", url, body, log=self.log)

@@ -1,5 +1,4 @@
 import random
-
 """
 sources:
 https://github.com/Rapptz/discord.py/blob/master/discord/colour.py
@@ -69,7 +68,8 @@ class Color:
 
     @staticmethod
     def to_rgb(c):
-        return (Color.get_byte(c, 2), Color.get_byte(c, 1), Color.get_byte(c, 0))
+        return (Color.get_byte(c, 2), Color.get_byte(c,
+                                                     1), Color.get_byte(c, 0))
 
     @staticmethod
     def get(*args):  # accepts decimal, hex, rgb

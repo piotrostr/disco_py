@@ -9,9 +9,8 @@ bot = discum.Client(token="ur token")
 def resptest(resp):
     if resp.event.message:
         print(resp.raw)  # raw response
-        print(
-            resp.parsed.message_create()["type"] == resp.parsed.auto()["type"]
-        )  # will print True
+        print(resp.parsed.message_create()["type"] == resp.parsed.auto()
+              ["type"])  # will print True
 
 
 bot.gateway.run()

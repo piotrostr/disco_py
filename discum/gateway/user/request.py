@@ -7,9 +7,8 @@ class UserRequest(object):
     def __init__(self, gatewayobj):
         self.gatewayobj = gatewayobj
 
-    def setStatus(
-        self, status, activities, afk, since
-    ):  # note, custom status goes in activities
+    def setStatus(self, status, activities, afk,
+                  since):  # note, custom status goes in activities
         data = {
             "op": self.gatewayobj.OPCODE.PRESENCE_UPDATE,
             "d": {

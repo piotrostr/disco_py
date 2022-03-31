@@ -13,8 +13,7 @@ class Imports:  # method factory (https://stackoverflow.com/a/55618155)
                     return globals()[name](*args, **kwargs)
                 except:
                     globals()[name] = getattr(
-                        __import__(self.imports[name], fromlist=[name]), name
-                    )
+                        __import__(self.imports[name], fromlist=[name]), name)
                     return globals()[name](*args, **kwargs)
 
             func.__name__ = name

@@ -9,16 +9,16 @@ from discum.utils.slash import SlashCommander
 def slashCommandTest(resp, guildID, channelID, botID):
     if resp.event.ready_supplemental:
         bot.gateway.request.searchSlashCommands(
-            guildID, limit=10, query="saved"
-        )  # query slash cmds
+            guildID, limit=10, query="saved")  # query slash cmds
     if resp.event.guild_application_commands_updated:
         bot.gateway.removeCommand(
             slashCommandTest
         )  # because 2 guild_app_cmd_update events are received...idk ask discord why
-        slashCmds = resp.parsed.auto()["application_commands"]  # get the slash cmds
+        slashCmds = resp.parsed.auto()[
+            "application_commands"]  # get the slash cmds
         s = SlashCommander(
-            slashCmds, application_id=botID
-        )  # for easy slash cmd data creation
+            slashCmds,
+            application_id=botID)  # for easy slash cmd data creation
         data = s.get(["saved", "queues", "create"], inputs={"name": "test"})
         bot.triggerSlashCommand(
             botID,
@@ -27,20 +27,22 @@ def slashCommandTest(resp, guildID, channelID, botID):
             data=data,
             sessionID=bot.gateway.session_id,
         )  # and send it off
-        bot.gateway.close()  # optional. It's better to remove this line actually.
+        bot.gateway.close(
+        )  # optional. It's better to remove this line actually.
 
 
 guildID = ""
 channelID = ""
 botID = "234395307759108106"
-bot.gateway.command(
-    {
-        "function": slashCommandTest,
-        "params": {"guildID": guildID, "channelID": channelID, "botID": botID},
-    }
-)
+bot.gateway.command({
+    "function": slashCommandTest,
+    "params": {
+        "guildID": guildID,
+        "channelID": channelID,
+        "botID": botID
+    },
+})
 bot.gateway.run()
-
 
 # The following example is the recommended for triggering slash commands in a DM
 
@@ -60,9 +62,8 @@ data = s.get(["saved", "queues", "create"], inputs={"name": "test"})
 
 # finally, lets send the slash command
 bot.triggerSlashCommand(
-    botID, channelID, data=data
-)  # by default, a random session id is generated
-
+    botID, channelID,
+    data=data)  # by default, a random session id is generated
 """
 It technically doesn't matter which one you use. But, if you'd like to mimic the client,
 use the top one in guilds and the bottom one in DMs. 

@@ -40,14 +40,19 @@ class Messages(object):
             "post",
             url,
             body,
-            headerModifications={"update": {"X-Context-Properties": context}},
+            headerModifications={"update": {
+                "X-Context-Properties": context
+            }},
             log=self.log,
         )
 
     # create a DM
     def createDM(self, recipients):
         req = self.createDMraw(recipients)
-        self.getMessages(req.json()["id"], num=50, beforeDate=None, aroundMessage=None)
+        self.getMessages(req.json()["id"],
+                         num=50,
+                         beforeDate=None,
+                         aroundMessage=None)
         return req
 
     # deleteChannel (also works for deleting dms/dm-groups)
@@ -66,7 +71,9 @@ class Messages(object):
             self.s,
             "put",
             url,
-            headerModifications={"update": {"X-Context-Properties": context}},
+            headerModifications={"update": {
+                "X-Context-Properties": context
+            }},
             log=self.log,
         )
 
@@ -81,7 +88,9 @@ class Messages(object):
             "post",
             url,
             body,
-            headerModifications={"update": {"X-Context-Properties": context}},
+            headerModifications={"update": {
+                "X-Context-Properties": context
+            }},
             log=self.log,
         )
 
@@ -98,10 +107,10 @@ class Messages(object):
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
     # get messages
-    def getMessages(
-        self, channelID, num, beforeDate, aroundMessage
-    ):  # num is between 1 and 100, beforeDate is a snowflake
-        url = self.discord + "channels/" + channelID + "/messages?limit=" + str(num)
+    def getMessages(self, channelID, num, beforeDate, aroundMessage
+                    ):  # num is between 1 and 100, beforeDate is a snowflake
+        url = self.discord + "channels/" + channelID + "/messages?limit=" + str(
+            num)
         if beforeDate != None:
             url += "&before=" + str(beforeDate)
         elif aroundMessage != None:
@@ -110,13 +119,8 @@ class Messages(object):
 
     # get message by channel ID and message ID
     def getMessage(self, channelID, messageID):
-        url = (
-            self.discord
-            + "channels/"
-            + channelID
-            + "/messages?limit=1&around="
-            + messageID
-        )
+        url = (self.discord + "channels/" + channelID +
+               "/messages?limit=1&around=" + messageID)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     # greet with stickers
@@ -168,8 +172,7 @@ class Messages(object):
         sticker_ids,
     ):
         mimetype, extensiontype, fd = Fileparse(self.s, self.log).parse(
-            filelocation, isurl
-        )  # guess extension from file data
+            filelocation, isurl)  # guess extension from file data
         if mimetype == "invalid":  # error out
             return
         if isurl:  # get filename
@@ -177,9 +180,8 @@ class Messages(object):
             if len(os.path.basename(a.path)) > 0:  # if everything is normal...
                 filename = os.path.basename(a.path)
             else:
-                if (
-                    mimetype == "unsupported"
-                ):  # if filetype not detected and extension not given
+                if (mimetype == "unsupported"
+                    ):  # if filetype not detected and extension not given
                     filename = "unknown"
                 else:  # if filetype detected but extension not given
                     filename = "unknown." + extensiontype
@@ -201,14 +203,17 @@ class Messages(object):
             "payload_json": (None, json.dumps(payload)),
         }
 
-        randomstr = "".join(random.sample(string.ascii_letters + string.digits, 16))
-        m = MultipartEncoder(
-            fields=fields, boundary="----WebKitFormBoundary" + randomstr
-        )
+        randomstr = "".join(
+            random.sample(string.ascii_letters + string.digits, 16))
+        m = MultipartEncoder(fields=fields,
+                             boundary="----WebKitFormBoundary" + randomstr)
         headerMods = {"update": {"Content-Type": m.content_type}}
-        response = Wrapper.sendRequest(
-            self.s, "post", url, body=m, headerModifications=headerMods, log=self.log
-        )
+        response = Wrapper.sendRequest(self.s,
+                                       "post",
+                                       url,
+                                       body=m,
+                                       headerModifications=headerMods,
+                                       log=self.log)
         return response
 
     def reply(
@@ -231,7 +236,10 @@ class Messages(object):
                 nonce=nonce,
                 tts=tts,
                 embed=embed,
-                message_reference={"channel_id": channelID, "message_id": messageID},
+                message_reference={
+                    "channel_id": channelID,
+                    "message_id": messageID
+                },
                 allowed_mentions=allowed_mentions,
                 sticker_ids=sticker_ids,
             )
@@ -242,7 +250,10 @@ class Messages(object):
                 isurl=isurl,
                 message=message,
                 tts=tts,
-                message_reference={"channel_id": channelID, "message_id": messageID},
+                message_reference={
+                    "channel_id": channelID,
+                    "message_id": messageID
+                },
                 sticker_ids=sticker_ids,
             )
 
@@ -273,9 +284,11 @@ class Messages(object):
             url = self.discord + "guilds/" + guildID + "/messages/search?"
         else:
             if isinstance(channelID, str):
-                url = self.discord + "channels/{}/messages/search?".format(channelID)
+                url = self.discord + "channels/{}/messages/search?".format(
+                    channelID)
             else:
-                url = self.discord + "channels/{}/messages/search?".format(channelID[0])
+                url = self.discord + "channels/{}/messages/search?".format(
+                    channelID[0])
         allqueryparams = []
         if channelID:
             if isinstance(channelID, str):
@@ -328,7 +341,8 @@ class Messages(object):
             for i in attachmentFilename:
                 allqueryparams.append(("attachment_filename", str(i)))
         if mentionsEveryone:
-            allqueryparams.append(("mention_everyone", repr(mentionsEveryone).lower()))
+            allqueryparams.append(
+                ("mention_everyone", repr(mentionsEveryone).lower()))
         if beforeDate:
             allqueryparams.append(("max_id", str(beforeDate)))
         if afterDate:
@@ -394,45 +408,22 @@ class Messages(object):
 
     def addReaction(self, channelID, messageID, emoji):
         parsedEmoji = quote_plus(emoji)
-        url = (
-            self.discord
-            + "channels/"
-            + channelID
-            + "/messages/"
-            + messageID
-            + "/reactions/"
-            + parsedEmoji
-            + "/%40me"
-        )
+        url = (self.discord + "channels/" + channelID + "/messages/" +
+               messageID + "/reactions/" + parsedEmoji + "/%40me")
         return Wrapper.sendRequest(self.s, "put", url, log=self.log)
 
     def removeReaction(self, channelID, messageID, emoji):
         parsedEmoji = quote_plus(emoji)
-        url = (
-            self.discord
-            + "channels/"
-            + channelID
-            + "/messages/"
-            + messageID
-            + "/reactions/"
-            + parsedEmoji
-            + "/%40me"
-        )
+        url = (self.discord + "channels/" + channelID + "/messages/" +
+               messageID + "/reactions/" + parsedEmoji + "/%40me")
         return Wrapper.sendRequest(self.s, "delete", url, log=self.log)
 
-    def getReactionUsers(self, channelID, messageID, emoji, afterUserID, limit):
+    def getReactionUsers(self, channelID, messageID, emoji, afterUserID,
+                         limit):
         parsedEmoji = quote_plus(emoji)
-        url = (
-            self.discord
-            + "channels/"
-            + channelID
-            + "/messages/"
-            + messageID
-            + "/reactions/"
-            + parsedEmoji
-            + "?limit="
-            + str(limit)
-        )
+        url = (self.discord + "channels/" + channelID + "/messages/" +
+               messageID + "/reactions/" + parsedEmoji + "?limit=" +
+               str(limit))
         if afterUserID:
             url += "&after=" + str(afterUserID)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
@@ -455,13 +446,6 @@ class Messages(object):
         return Wrapper.sendRequest(self.s, "post", url, body, log=self.log)
 
     def getTrendingGifs(self, provider, locale, media_format):
-        url = (
-            self.discord
-            + "gifs/trending?provider="
-            + provider
-            + "&locale="
-            + locale
-            + "&media_format="
-            + media_format
-        )
+        url = (self.discord + "gifs/trending?provider=" + provider +
+               "&locale=" + locale + "&media_format=" + media_format)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)

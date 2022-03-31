@@ -15,18 +15,20 @@ class Fileparse(object):
 
     def __init__(self, s, log):  # s is the requests session object
         self.log = log
-        self.editedS = Wrapper.editedReqSession(
-            s, {"remove": ["Authorization", "X-Fingerprint", "X-Super-Properties"]}
-        )
+        self.editedS = Wrapper.editedReqSession(s, {
+            "remove": ["Authorization", "X-Fingerprint", "X-Super-Properties"]
+        })
 
-    def parse(self, filelocation, isurl):  # returns mimetype and extension if detected
+    def parse(self, filelocation,
+              isurl):  # returns mimetype and extension if detected
         fd = b""
         if isurl:
             result = urlparse(filelocation)
             if all([result.scheme, result.netloc]):  # if a link...
-                fd = Wrapper.sendRequest(
-                    self.editedS, "get", filelocation, log=self.log
-                ).content
+                fd = Wrapper.sendRequest(self.editedS,
+                                         "get",
+                                         filelocation,
+                                         log=self.log).content
                 kind = filetype.guess(fd)
                 if kind is None:
                     Logger.log(

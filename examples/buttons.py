@@ -3,7 +3,6 @@
 import discum
 
 bot = discum.Client(token="ur token")
-
 """
 1st example: get message and then click on button
 """
@@ -36,12 +35,12 @@ bot.click(
     guildID=guildID,
     messageID=data["id"],
     messageFlags=data["flags"],
-    data=buts.getMenuSelection(placeholder="Make a selection", labels=["a", "b"]),
+    data=buts.getMenuSelection(placeholder="Make a selection",
+                               labels=["a", "b"]),
 )
 
 # note that custom_ids can change after you make an interaction (click on a button, react, etc),
 # so don't forget to fetch the message again before clicking on a button
-
 """
 2nd example: triggering groovy's queue slash cmd and then click on the "First" button
 """
@@ -55,16 +54,16 @@ from discum.utils.button import Buttoner
 def slashCommandTest(resp, guildID, channelID, botID):
     if resp.event.ready_supplemental:
         bot.gateway.request.searchSlashCommands(
-            guildID, limit=10, query="queue"
-        )  # query slash cmds
+            guildID, limit=10, query="queue")  # query slash cmds
     if resp.event.guild_application_commands_updated:
         bot.gateway.removeCommand(
             slashCommandTest
         )  # because 2 guild_app_cmd_update events are received...idk ask discord why
-        slashCmds = resp.parsed.auto()["application_commands"]  # get the slash cmds
+        slashCmds = resp.parsed.auto()[
+            "application_commands"]  # get the slash cmds
         s = SlashCommander(
-            slashCmds, application_id=botID
-        )  # for easy slash cmd data creation
+            slashCmds,
+            application_id=botID)  # for easy slash cmd data creation
         data = s.get(["queue"])
         bot.triggerSlashCommand(
             botID,
@@ -79,10 +78,9 @@ def slashCommandTest(resp, guildID, channelID, botID):
 def clickButton(resp):
     if resp.event.message or resp.event.message_updated:
         data = resp.parsed.auto()
-        if (
-            data.get("webhook_id") == "234395307759108106"
-            and data["interaction"]["user"]["id"] == bot.gateway.session.user["id"]
-        ):
+        if (data.get("webhook_id") == "234395307759108106"
+                and data["interaction"]["user"]["id"]
+                == bot.gateway.session.user["id"]):
             bot.gateway.close()
             buts = Buttoner(data["components"])
             bot.click(
@@ -99,11 +97,13 @@ def clickButton(resp):
 guildID = ""
 channelID = ""
 botID = "234395307759108106"
-bot.gateway.command(
-    {
-        "function": slashCommandTest,
-        "params": {"guildID": guildID, "channelID": channelID, "botID": botID},
-    }
-)
+bot.gateway.command({
+    "function": slashCommandTest,
+    "params": {
+        "guildID": guildID,
+        "channelID": channelID,
+        "botID": botID
+    },
+})
 
 bot.gateway.run()

@@ -18,9 +18,8 @@ class SlashCommands(object):
         url = self.discord + "applications/" + applicationID + "/commands"
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
-    def triggerSlashCommand(
-        self, applicationID, channelID, guildID, data, nonce, sessionID
-    ):
+    def triggerSlashCommand(self, applicationID, channelID, guildID, data,
+                            nonce, sessionID):
         url = self.discord + "interactions"
         # nonce
         if nonce == "calculate":
@@ -30,8 +29,7 @@ class SlashCommands(object):
         # session id
         if sessionID == "random":
             sessionID = "".join(
-                random.choices(string.ascii_letters + string.digits, k=32)
-            )
+                random.choices(string.ascii_letters + string.digits, k=32))
         # body
         payload = {
             "type": 2,
@@ -45,12 +43,15 @@ class SlashCommands(object):
         if guildID == None:
             payload.pop("guild_id")
         fields = {"payload_json": (None, json.dumps(payload))}
-        randomstr = "".join(random.sample(string.ascii_letters + string.digits, 16))
-        body = MultipartEncoder(
-            fields=fields, boundary="----WebKitFormBoundary" + randomstr
-        )
+        randomstr = "".join(
+            random.sample(string.ascii_letters + string.digits, 16))
+        body = MultipartEncoder(fields=fields,
+                                boundary="----WebKitFormBoundary" + randomstr)
         headerMods = {"update": {"Content-Type": body.content_type}}
 
-        return Wrapper.sendRequest(
-            self.s, "post", url, body, headerModifications=headerMods, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "post",
+                                   url,
+                                   body,
+                                   headerModifications=headerMods,
+                                   log=self.log)

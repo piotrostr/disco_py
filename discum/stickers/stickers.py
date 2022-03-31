@@ -11,25 +11,13 @@ class Stickers(object):
 
     def getStickers(self, directoryID, store_listings, locale):
         store_listings = str(store_listings).lower()
-        url = (
-            self.discord
-            + "sticker-packs/directory-v2/"
-            + directoryID
-            + "?with_store_listings="
-            + store_listings
-            + "&locale="
-            + locale
-        )
+        url = (self.discord + "sticker-packs/directory-v2/" + directoryID +
+               "?with_store_listings=" + store_listings + "&locale=" + locale)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getStickerFile(self, stickerID, stickerAsset):  # this is an apng
-        url = (
-            "https://media.discordapp.net/stickers/"
-            + stickerID
-            + "/"
-            + stickerAsset
-            + ".png"
-        )
+        url = ("https://media.discordapp.net/stickers/" + stickerID + "/" +
+               stickerAsset + ".png")
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getStickerJson(self, stickerID, stickerAsset):

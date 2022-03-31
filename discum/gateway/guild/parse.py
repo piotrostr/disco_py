@@ -2,6 +2,7 @@ from ..types import Types
 
 # parses response from gateway
 
+
 # function names are just lowercase types, so for type GUILD_MEMBER_LIST_UPDATE, the function is guild_member_list_update
 class GuildParse(object):
     @staticmethod
@@ -26,9 +27,9 @@ class GuildParse(object):
                 else:  # invalidate
                     memberdata["updates"].append([])
             elif chunk["op"] in (
-                "INSERT",
-                "UPDATE",
-                "DELETE",
+                    "INSERT",
+                    "UPDATE",
+                    "DELETE",
             ):  # only update the 0,99 range btw
                 memberdata["locations"].append(chunk["index"])
                 if chunk["op"] == "DELETE":
@@ -43,14 +44,12 @@ class GuildParse(object):
         guilddata = dict(response["d"])
         # take care of position
         guilddata["my_data"] = response["d"].get("members", [])
-        guilddata[
-            "members"
-        ] = (
+        guilddata["members"] = (
             {}
         )  # we dont actually get sent the member list from guild creates. however, this usually contains our position/role in that guild so...still good info
         guilddata["my_data"] = next(
-            (a for a in guilddata["my_data"] if a["user"]["id"] == my_user_id), {}
-        )
+            (a for a in guilddata["my_data"] if a["user"]["id"] == my_user_id),
+            {})
         if len(guilddata["my_data"]) == 1:
             guilddata["my_data"][0].pop("user", None)
             guilddata["my_data"][0]["user_id"] = my_user_id
@@ -79,17 +78,21 @@ class GuildParse(object):
             ]  # list of user ids
         presences = {}
         if "presences" in response["d"]:
-            presences = {i["user"]["id"]: i for i in response["d"]["presences"]}
+            presences = {
+                i["user"]["id"]: i
+                for i in response["d"]["presences"]
+            }
         for user in response["d"]["members"]:
             completeData = dict(user)
             defaultPresence = {
-                "user": {"id": user.get("user").get("id")},
+                "user": {
+                    "id": user.get("user").get("id")
+                },
                 "status": "offline",
                 "client_status": {},
                 "activities": [],
             }  # offline status
             completeData["presence"] = presences.pop(
-                user.get("user").get("id"), defaultPresence
-            )
+                user.get("user").get("id"), defaultPresence)
             memberChunkData["members"].append(completeData)
         return memberChunkData

@@ -25,17 +25,26 @@ class Embedder(object):
         self.jsonEmbed.update({"footer": {"icon_url": iconURL, "text": text}})
 
     def image(self, url):
-        self.jsonEmbed.update({"image": {"url": url,}})
+        self.jsonEmbed.update({"image": {
+            "url": url,
+        }})
 
     def thumbnail(self, url):
-        self.jsonEmbed.update({"thumbnail": {"url": url,}})
+        self.jsonEmbed.update({"thumbnail": {
+            "url": url,
+        }})
 
     def author(self, name, url="", icon_url=""):
         self.jsonEmbed.update(
-            {"author": {"name": name, "url": url, "icon_url": icon_url}}
-        )
+            {"author": {
+                "name": name,
+                "url": url,
+                "icon_url": icon_url
+            }})
 
     def fields(self, name, value, inline=False):
-        self.jsonEmbed["fields"].append(
-            {"name": name, "value": value, "inline": inline}
-        )
+        self.jsonEmbed["fields"].append({
+            "name": name,
+            "value": value,
+            "inline": inline
+        })

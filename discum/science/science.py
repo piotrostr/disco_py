@@ -8,9 +8,8 @@ from ..utils.client_uuid import Client_UUID
 class Science(object):
     __slots__ = ["discord", "s", "log", "analytics_token", "UUIDobj"]
 
-    def __init__(
-        self, discord, s, log, analytics_token, userID
-    ):  # s is the requests session object
+    def __init__(self, discord, s, log, analytics_token,
+                 userID):  # s is the requests session object
         self.discord = discord
         self.s = s
         self.log = log
@@ -28,12 +27,12 @@ class Science(object):
         now = self.getCurrentUnixMS()
         trackingProperties = {"client_track_timestamp": now}
         if duration == "random":
-            trackingProperties["client_send_timestamp"] = now + random.randint(40, 1000)
+            trackingProperties["client_send_timestamp"] = now + random.randint(
+                40, 1000)
         else:
             trackingProperties["client_send_timestamp"] = now + duration
         trackingProperties["client_uuid"] = self.UUIDobj.calculate(
-            eventNum="default", userID="default", increment=True
-        )
+            eventNum="default", userID="default", increment=True)
         return trackingProperties
 
     def science(
@@ -43,19 +42,16 @@ class Science(object):
         for event in events:
             if "type" not in event:
                 event["type"] = "keyboard_mode_toggled"  # random default type
-            if (
-                "properties" not in event
-                or "client_send_timestamp" not in event["properties"]
-                or "client_track_timestamp" not in event["properties"]
-                or "client_uuid" not in event["properties"]
-            ):
+            if ("properties" not in event
+                    or "client_send_timestamp" not in event["properties"]
+                    or "client_track_timestamp" not in event["properties"]
+                    or "client_uuid" not in event["properties"]):
                 event["properties"] = self.getTrackingProperties()
             else:
                 self.UUIDobj.eventNum += 1
         body = {"token": self.analytics_token, "events": events}
-        if (
-            self.analytics_token == None
-        ):  # if not logged in. ex: bot=discum.Client(token='poop')
+        if (self.analytics_token == None
+            ):  # if not logged in. ex: bot=discum.Client(token='poop')
             headerModifications = {"remove": ["Authorization"]}
             return Wrapper.sendRequest(
                 self.s,

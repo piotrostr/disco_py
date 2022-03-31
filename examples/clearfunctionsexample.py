@@ -7,7 +7,8 @@ bot = discum.Client(token="ur token")
 def helloworld1(resp):
     if resp.event.ready_supplemental:  # ready_supplemental is sent after ready
         user = bot.gateway.session.user
-        print("Logged in as {}#{}".format(user["username"], user["discriminator"]))
+        print("Logged in as {}#{}".format(user["username"],
+                                          user["discriminator"]))
 
 
 @bot.gateway.command

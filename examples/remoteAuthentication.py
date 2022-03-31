@@ -8,6 +8,7 @@ bot.initRA()
 
 # now you can use the remote authentication functions, for example:
 
+
 # this sends the qr code image in a message
 # note that qr codes expire after 5 mintues
 @bot.ra.command

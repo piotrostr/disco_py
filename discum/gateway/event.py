@@ -195,7 +195,9 @@ class Event:
         return self.response["t"] == "LIBRARY_APPLICATION_UPDATE"
 
     @property
-    def lobby(self):  # idk...https://discord.com/developers/docs/game-sdk/lobbies...
+    def lobby(
+            self
+    ):  # idk...https://discord.com/developers/docs/game-sdk/lobbies...
         return self.response["t"] == "LOBBY_CREATE"
 
     @property
@@ -273,7 +275,8 @@ class Event:
         return self.response["t"] == "MESSAGE_UPDATE"
 
     @property
-    def oauth2_token_removed(self):  # maybe has to do with deleting an account?
+    def oauth2_token_removed(
+            self):  # maybe has to do with deleting an account?
         return self.response["t"] == "OAUTH2_TOKEN_REMOVE"
 
     @property
@@ -352,11 +355,13 @@ class Event:
 
     @property
     def user_premium_guild_sub_slot(self):  # now thats a long name
-        return self.response["t"] == "USER_PREMIUM_GUILD_SUBSCRIPTION_SLOT_CREATE"
+        return self.response[
+            "t"] == "USER_PREMIUM_GUILD_SUBSCRIPTION_SLOT_CREATE"
 
     @property
     def user_premium_guild_sub_slot_updated(self):
-        return self.response["t"] == "USER_PREMIUM_GUILD_SUBSCRIPTION_SLOT_UPDATE"
+        return self.response[
+            "t"] == "USER_PREMIUM_GUILD_SUBSCRIPTION_SLOT_UPDATE"
 
     @property
     def required_action_updated(self):  # idk
@@ -403,7 +408,8 @@ class Event:
         return self.response["t"] == "THREAD_DELETE"
 
     @property
-    def thread_list_sync(self):  # Sent when the current user gains access to a thread
+    def thread_list_sync(
+            self):  # Sent when the current user gains access to a thread
         return self.response["t"] == "THREAD_LIST_SYNC"
 
     @property
@@ -414,6 +420,5 @@ class Event:
 
     @property
     def thread_members_updated(
-        self,
-    ):  # Sent when anyone is added to or removed from a thread
+        self, ):  # Sent when anyone is added to or removed from a thread
         return self.response["t"] == "THREAD_MEMBERS_UPDATE"

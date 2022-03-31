@@ -8,7 +8,8 @@ class SlashCommander(object):
             else:
                 self.commands = {
                     "options": [
-                        commands if commands["application_id"] == application_id else {}
+                        commands if commands["application_id"]
+                        == application_id else {}
                     ]
                 }
         elif type(commands) in (list, tuple) and isinstance(commands[0], dict):
@@ -17,13 +18,13 @@ class SlashCommander(object):
             else:
                 self.commands = {
                     "options": [
-                        cmd
-                        for cmd in commands
+                        cmd for cmd in commands
                         if cmd["application_id"] == application_id
                     ]
                 }
         else:
-            raise ValueError("commands must be either a list of dicts or a dict.")
+            raise ValueError(
+                "commands must be either a list of dicts or a dict.")
 
         self.option_types = {
             1: ("SUB_COMMAND", None),
@@ -43,16 +44,13 @@ class SlashCommander(object):
         result = self.commands
         for cmd in cmdList:
             result = next(
-                (
-                    c
-                    for c in result["options"]
-                    if c["name"] == cmd
-                    and (c["type"] in (1, 2) or self._isAtOuterLvl(c))
-                ),
+                (c for c in result["options"] if c["name"] == cmd and (
+                    c["type"] in (1, 2) or self._isAtOuterLvl(c))),
                 None,
             )
             if result == None:
-                raise ValueError("{} is not a valid command list".format(cmdList))
+                raise ValueError(
+                    "{} is not a valid command list".format(cmdList))
         return result
 
     # gets subdictionary pointer from constructed/input dictionary
@@ -95,46 +93,47 @@ class SlashCommander(object):
         current_cmd = self.commands
         for index, cmd in enumerate(cmdList):
             current_cmd = next(
-                (
-                    c
-                    for c in current_cmd["options"]
-                    if c["name"] == cmd and c["type"] in (1, 2) or self._isAtOuterLvl(c)
-                ),
+                (c for c in current_cmd["options"]
+                 if c["name"] == cmd and c["type"] in
+                 (1, 2) or self._isAtOuterLvl(c)),
                 None,
             )
             if current_cmd == None:
-                raise ValueError("{} is not a valid command list".format(cmdList))
+                raise ValueError(
+                    "{} is not a valid command list".format(cmdList))
             data = {
                 "name": current_cmd["name"],
                 "type": current_cmd["type"],
                 "options": [],
             }
             if self._isAtOuterLvl(current_cmd):
-                data.update(
-                    {
-                        "version": current_cmd.get("version"),
-                        "id": current_cmd["id"],
-                        "attachments": [],  # only the top layer of cmds has attachments
-                        "application_command": dict(current_cmd),
-                    }
-                )
-            self._getConstructedSubdict(constructed_slash_cmd, index).update(data)
+                data.update({
+                    "version": current_cmd.get("version"),
+                    "id": current_cmd["id"],
+                    "attachments":
+                    [],  # only the top layer of cmds has attachments
+                    "application_command": dict(current_cmd),
+                })
+            self._getConstructedSubdict(constructed_slash_cmd,
+                                        index).update(data)
         options = self._getCmdSubdict(cmdList).get("options", [])
         constructed_option_data = []
         for param in inputs:
-            param_link = next((item for item in options if item["name"] == param), None)
+            param_link = next(
+                (item for item in options if item["name"] == param), None)
             if param_link:
                 correct_type = self.option_types[param_link["type"]][1]
-                constructed_option_data.append(
-                    {
-                        "type": param_link["type"],
-                        "name": param_link["name"],
-                        "value": correct_type(inputs[param]),
-                    }
-                )
-        self._getConstructedSubdict(constructed_slash_cmd, len(cmdList) - 1).update(
-            {"options": constructed_option_data}
-        )
+                constructed_option_data.append({
+                    "type":
+                    param_link["type"],
+                    "name":
+                    param_link["name"],
+                    "value":
+                    correct_type(inputs[param]),
+                })
+        self._getConstructedSubdict(constructed_slash_cmd,
+                                    len(cmdList) - 1).update(
+                                        {"options": constructed_option_data})
         return constructed_slash_cmd
 
 

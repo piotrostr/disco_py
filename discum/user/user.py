@@ -37,7 +37,8 @@ class User(object):
                 body,
                 headerModifications={
                     "update": {
-                        "X-Context-Properties": ContextProperties.get("add friend")
+                        "X-Context-Properties":
+                        ContextProperties.get("add friend")
                     }
                 },
                 log=self.log,
@@ -52,7 +53,8 @@ class User(object):
                 body,
                 headerModifications={
                     "update": {
-                        "X-Context-Properties": ContextProperties.get("context menu")
+                        "X-Context-Properties":
+                        ContextProperties.get("context menu")
                     }
                 },
                 log=self.log,
@@ -67,21 +69,24 @@ class User(object):
             url,
             body,
             headerModifications={
-                "update": {"X-Context-Properties": ContextProperties.get(location)}
+                "update": {
+                    "X-Context-Properties": ContextProperties.get(location)
+                }
             },
             log=self.log,
         )
 
     def removeRelationship(
-        self, userID, location
-    ):  # for removing friends, unblocking people
+            self, userID, location):  # for removing friends, unblocking people
         url = self.discord + "users/@me/relationships/" + userID
         return Wrapper.sendRequest(
             self.s,
             "delete",
             url,
             headerModifications={
-                "update": {"X-Context-Properties": ContextProperties.get(location)}
+                "update": {
+                    "X-Context-Properties": ContextProperties.get(location)
+                }
             },
             log=self.log,
         )
@@ -95,7 +100,9 @@ class User(object):
             url,
             body,
             headerModifications={
-                "update": {"X-Context-Properties": ContextProperties.get(location)}
+                "update": {
+                    "X-Context-Properties": ContextProperties.get(location)
+                }
             },
             log=self.log,
         )
@@ -104,17 +111,20 @@ class User(object):
         url = self.discord + "users/" + userID + "/profile"
         queries = []
         if with_mutual_guilds != None:
-            queries.append("with_mutual_guilds=" + repr(with_mutual_guilds).lower())
+            queries.append("with_mutual_guilds=" +
+                           repr(with_mutual_guilds).lower())
         if guildID != None:
             queries.append("guild_id=" + str(guildID))
         if queries:
             url += "?" + "&".join(queries)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
-    def info(self, with_analytics_token):  # simple. bot.info() for own user data
+    def info(self,
+             with_analytics_token):  # simple. bot.info() for own user data
         url = self.discord + "users/@me"
         if with_analytics_token != None:
-            url += "?with_analytics_token=" + repr(with_analytics_token).lower()
+            url += "?with_analytics_token=" + repr(
+                with_analytics_token).lower()
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getUserAffinities(self):
@@ -129,15 +139,8 @@ class User(object):
     def getMentions(self, limit, roleMentions, everyoneMentions):
         roleMentions = str(roleMentions).lower()
         everyoneMentions = str(everyoneMentions).lower()
-        url = (
-            self.discord
-            + "users/@me/mentions?limit="
-            + str(limit)
-            + "&roles="
-            + roleMentions
-            + "&everyone="
-            + everyoneMentions
-        )
+        url = (self.discord + "users/@me/mentions?limit=" + str(limit) +
+               "&roles=" + roleMentions + "&everyone=" + everyoneMentions)
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def removeMentionFromInbox(self, messageID):
@@ -166,18 +169,26 @@ class User(object):
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def setStatusHelper(
-        self, status, timeout=None
+        self,
+        status,
+        timeout=None
     ):  # Dont run this function by itself; status options are: online, idle, dnd, invisible
         url = self.discord + "users/@me/settings"
         if status in ("online", "idle", "dnd", "invisible"):
             body = {"status": status}
-        return Wrapper.sendRequest(
-            self.s, "patch", url, body, timeout=timeout, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "patch",
+                                   url,
+                                   body,
+                                   timeout=timeout,
+                                   log=self.log)
 
     def setCustomStatusHelper(
-        self, customstatus, emoji, expires_at, timeout=None
-    ):  # Dont run this function by itself
+            self,
+            customstatus,
+            emoji,
+            expires_at,
+            timeout=None):  # Dont run this function by itself
         url = self.discord + "users/@me/settings"
         body = {"custom_status": {}}
         if customstatus not in (None, ""):
@@ -196,24 +207,25 @@ class User(object):
             body["custom_status"]["expires_at"] = timestamp
         if body["custom_status"] == {}:
             body["custom_status"] = None
-        return Wrapper.sendRequest(
-            self.s, "patch", url, body, timeout=timeout, log=self.log
-        )
+        return Wrapper.sendRequest(self.s,
+                                   "patch",
+                                   url,
+                                   body,
+                                   timeout=timeout,
+                                   log=self.log)
 
     # USER SETTINGS
     """
 	My Account
 	"""
 
-    def setAvatar(self, imagePath):  # local image, set to None to delete avatar
+    def setAvatar(self,
+                  imagePath):  # local image, set to None to delete avatar
         url = self.discord + "users/@me"
         with open(imagePath, "rb") as image:
             encodedImage = base64.b64encode(image.read()).decode("utf-8")
-        imageExt = (
-            data[-1]
-            if (data := imagePath.split(".")) and data[-1] in ["png", "gif"]
-            else "jpeg"
-        )
+        imageExt = (data[-1] if (data := imagePath.split("."))
+                    and data[-1] in ["png", "gif"] else "jpeg")
         body = {"avatar": f"data:image/{imageExt};base64," + encodedImage}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
@@ -256,7 +268,8 @@ class User(object):
         body = {"banner": "data:image/png;base64," + encodedImage}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
-    def enable2FA(self, code, secret, password):  # returns new token plus backup codes
+    def enable2FA(self, code, secret,
+                  password):  # returns new token plus backup codes
         url = self.discord + "users/@me/mfa/totp/enable"
         body = {"code": code, "secret": secret, "password": password}
         return Wrapper.sendRequest(self.s, "post", url, body, log=self.log)
@@ -332,7 +345,8 @@ class User(object):
             body["friend_source_flags"]["mutual_guilds"] = False
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
-    def analyticsConsent(self, grant, revoke):  # personalization, usage_statistics
+    def analyticsConsent(self, grant,
+                         revoke):  # personalization, usage_statistics
         url = self.discord + "users/@me/consent"
         body = {"grant": grant, "revoke": revoke}
         return Wrapper.sendRequest(self.s, "post", url, body, log=self.log)
@@ -358,36 +372,23 @@ class User(object):
         url = self.discord + "connections/" + accountType + "/authorize"
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
-    def enableConnectionDisplayOnProfile(self, accountType, accountUsername, enable):
-        url = (
-            self.discord
-            + "users/@me/connections/"
-            + accountType
-            + "/"
-            + accountUsername
-        )
+    def enableConnectionDisplayOnProfile(self, accountType, accountUsername,
+                                         enable):
+        url = (self.discord + "users/@me/connections/" + accountType + "/" +
+               accountUsername)
         body = {"visibility": enable}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
-    def enableConnectionDisplayOnStatus(self, accountType, accountUsername, enable):
-        url = (
-            self.discord
-            + "users/@me/connections/"
-            + accountType
-            + "/"
-            + accountUsername
-        )
+    def enableConnectionDisplayOnStatus(self, accountType, accountUsername,
+                                        enable):
+        url = (self.discord + "users/@me/connections/" + accountType + "/" +
+               accountUsername)
         body = {"show_activity": enable}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
     def removeConnection(self, accountType, accountUsername):
-        url = (
-            self.discord
-            + "users/@me/connections/"
-            + accountType
-            + "/"
-            + accountUsername
-        )
+        url = (self.discord + "users/@me/connections/" + accountType + "/" +
+               accountUsername)
         return Wrapper.sendRequest(self.s, "delete", url, log=self.log)
 
     # BILLING SETTINGS
@@ -521,13 +522,8 @@ class User(object):
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     def getApplicationData(self, applicationID, with_guild):
-        url = (
-            self.discord
-            + "applications/"
-            + applicationID
-            + "/public?with_guild="
-            + str(with_guild).lower()
-        )
+        url = (self.discord + "applications/" + applicationID +
+               "/public?with_guild=" + str(with_guild).lower())
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
     # ACTIVITY SETTINGS
@@ -538,7 +534,12 @@ class User(object):
     def enableActivityDisplay(self, enable, timeout=None):
         url = self.discord + "users/@me/settings"
         body = {"show_current_game": enable}
-        Wrapper.sendRequest(self.s, "patch", url, body, timeout=timeout, log=self.log)
+        Wrapper.sendRequest(self.s,
+                            "patch",
+                            url,
+                            body,
+                            timeout=timeout,
+                            log=self.log)
 
     # OTHER SETTINGS
     """
@@ -570,7 +571,8 @@ class User(object):
             "get",
             url,
             headerModifications={
-                "remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]
+                "remove":
+                ["Authorization", "X-Super-Properties", "X-Fingerprint"]
             },
             log=self.log,
         )
@@ -582,7 +584,9 @@ class User(object):
                 self.s,
                 "put",
                 url,
-                headerModifications={"remove": ["X-Super-Properties", "X-Fingerprint"]},
+                headerModifications={
+                    "remove": ["X-Super-Properties", "X-Fingerprint"]
+                },
                 log=self.log,
             )
         else:
@@ -590,7 +594,9 @@ class User(object):
                 self.s,
                 "delete",
                 url,
-                headerModifications={"remove": ["X-Super-Properties", "X-Fingerprint"]},
+                headerModifications={
+                    "remove": ["X-Super-Properties", "X-Fingerprint"]
+                },
                 log=self.log,
             )
 
@@ -628,10 +634,10 @@ class User(object):
             msgNotificationTypes = ["all messages", "only mentions", "nothing"]
             overrides = {
                 str(channel): {
-                    "message_notifications": self.index(
-                        msgNotificationTypes, msg.lower()
-                    ),
-                    "muted": muted,
+                    "message_notifications":
+                    self.index(msgNotificationTypes, msg.lower()),
+                    "muted":
+                    muted,
                 }
                 for channel, msg, muted in overrides
             }
@@ -642,9 +648,8 @@ class User(object):
         url = self.discord + "users/@me/guilds/" + str(guildID) + "/settings"
         msgNotificationTypes = ["all messages", "only mentions", "nothing"]
         body = {
-            "message_notifications": self.index(
-                msgNotificationTypes, notifications.lower()
-            )
+            "message_notifications":
+            self.index(msgNotificationTypes, notifications.lower())
         }
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
@@ -653,10 +658,8 @@ class User(object):
         body = {"muted": mute}
         if mute and duration is not None:
             end_time = (
-                (
-                    datetime.datetime.utcnow() + datetime.timedelta(minutes=duration)
-                ).isoformat()[:-3]
-                + "Z"
+                (datetime.datetime.utcnow() +
+                 datetime.timedelta(minutes=duration)).isoformat()[:-3] + "Z"
             )  # https://stackoverflow.com/a/54272238/14776493
             body["mute_config"] = {
                 "selected_time_window": duration,
@@ -669,22 +672,25 @@ class User(object):
         data = {"muted": mute}
         if mute:
             if duration is not None:
-                end_time = (
-                    datetime.datetime.utcnow() + datetime.timedelta(minutes=duration)
-                ).isoformat()[:-3] + "Z"
+                end_time = (datetime.datetime.utcnow() + datetime.timedelta(
+                    minutes=duration)).isoformat()[:-3] + "Z"
                 data["mute_config"] = {
                     "selected_time_window": duration,
                     "end_time": end_time,
                 }
             else:
-                data["mute_config"] = {"selected_time_window": -1, "end_time": None}
+                data["mute_config"] = {
+                    "selected_time_window": -1,
+                    "end_time": None
+                }
         body = {"channel_overrides": {str(DMID): data}}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
     def setThreadNotifications(self, threadID, notifications):
         url = self.discord + "channels/" + threadID + "/thread-members/@me/settings"
         threadNotificationTypes = ["all messages", "only mentions", "nothing"]
-        flags = 1 << (self.index(threadNotificationTypes, notifications.lower()) + 1)
+        flags = 1 << (
+            self.index(threadNotificationTypes, notifications.lower()) + 1)
         body = {"flags": flags}
         return Wrapper.sendRequest(self.s, "patch", url, body, log=self.log)
 
@@ -692,9 +698,8 @@ class User(object):
         url = self.discord + "reporting/menu/first_dm"
         return Wrapper.sendRequest(self.s, "get", url, log=self.log)
 
-    def reportSpam(
-        self, channelID, messageID, reportType, guildID, version, variant, language
-    ):
+    def reportSpam(self, channelID, messageID, reportType, guildID, version,
+                   variant, language):
         url = self.discord + "reporting/" + reportType
         body = {
             "id": calculateNonce(),

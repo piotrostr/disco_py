@@ -2,17 +2,16 @@
 
 from ..importmanager import Imports
 
-imports = Imports(
-    {
-        "StartParse": "discum.gateway.start.parse",
-        "GuildParse": "discum.gateway.guild.parse",
-        "UserParse": "discum.gateway.user.parse",
-        "MessageParse": "discum.gateway.messages.parse",
-        "ChannelParse": "discum.gateway.channels.parse",
-    }
-)
+imports = Imports({
+    "StartParse": "discum.gateway.start.parse",
+    "GuildParse": "discum.gateway.guild.parse",
+    "UserParse": "discum.gateway.user.parse",
+    "MessageParse": "discum.gateway.messages.parse",
+    "ChannelParse": "discum.gateway.channels.parse",
+})
 
 import copy
+
 
 # function names are just lowercase types, so for type GUILD_MEMBER_LIST_UPDATE, the function is guild_member_list_update
 class Parse(object):
@@ -25,8 +24,7 @@ class Parse(object):
         if hasattr(self, str(self.response["t"]).lower()):
             return getattr(self, str(self.response["t"]).lower())()
         return self.response[
-            "d"
-        ]  # just return the value of d if there's no parse function for it yet
+            "d"]  # just return the value of d if there's no parse function for it yet
 
     def ready(self):
         return imports.StartParse().ready(self.response)
@@ -38,7 +36,8 @@ class Parse(object):
         return imports.GuildParse().guild_member_list_update(self.response)
 
     def guild_create(
-        self, my_user_id="0"
+        self,
+        my_user_id="0"
     ):  # personal user id needed to update personal roles for that guild
         return imports.GuildParse().guild_create(self.response, my_user_id)
 

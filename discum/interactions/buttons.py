@@ -33,8 +33,7 @@ class Buttons(object):
         # session id
         if sessionID == "random":
             sessionID = "".join(
-                random.choices(string.ascii_letters + string.digits, k=32)
-            )
+                random.choices(string.ascii_letters + string.digits, k=32))
         # body
         body = {
             "type": 3,

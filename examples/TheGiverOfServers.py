@@ -16,7 +16,8 @@ bot.discord = "https://discord.com/api/"  # modify base url
 def helloworld(resp):
     if resp.event.ready_supplemental:  # ready_supplemental is sent after ready
         user = bot.gateway.session.user
-        print("Logged in as {}#{}".format(user["username"], user["discriminator"]))
+        print("Logged in as {}#{}".format(user["username"],
+                                          user["discriminator"]))
     if resp.event.message:
         m = resp.parsed.auto()
         if m["content"] == "turn me into a server":
@@ -27,11 +28,9 @@ def helloworld(resp):
         if m["author"]["id"] == bot.gateway.session.user["id"]:
             return
         if m["type"] == "reply":
-            if (
-                "referenced_message" in m
-                and m["referenced_message"]["author"]["id"]
-                == bot.gateway.session.user["id"]
-            ):
+            if ("referenced_message" in m
+                    and m["referenced_message"]["author"]["id"]
+                    == bot.gateway.session.user["id"]):
                 time.sleep(1)
                 bot.reply(
                     m["channel_id"],

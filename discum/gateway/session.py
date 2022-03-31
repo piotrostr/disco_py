@@ -54,7 +54,8 @@ class Session:
     @property
     def guildIDs(self):  # only for guilds that you're in
         return [
-            guildID for guildID in self.guilds if "removed" not in self.guilds[guildID]
+            guildID for guildID in self.guilds
+            if "removed" not in self.guilds[guildID]
         ]
 
     def setGuildData(self, guildID, guildData):
@@ -155,8 +156,7 @@ class Session:
     @property
     def userGuildSettings(self):
         return self.settings_ready[
-            "user_guild_settings"
-        ]  # so uh...this is not only for guilds. It also covers group DMs so uh yea...weird naming
+            "user_guild_settings"]  # so uh...this is not only for guilds. It also covers group DMs so uh yea...weird naming
 
     @property
     def userSettings(self):
@@ -197,8 +197,7 @@ class Session:
     @property
     def readStates(self):
         return self.settings_ready[
-            "read_state"
-        ]  # another advantage of using websockets instead of requests (see https://github.com/discord/discord-api-docs/issues/13)
+            "read_state"]  # another advantage of using websockets instead of requests (see https://github.com/discord/discord-api-docs/issues/13)
 
     @property
     def geoOrderedRtcRegions(self):
@@ -211,8 +210,7 @@ class Session:
     @property
     def tutorial(self):
         return self.settings_ready[
-            "tutorial"
-        ]  # that tutorial you get when you first make an account
+            "tutorial"]  # that tutorial you get when you first make an account
 
 
 ###specific guild
@@ -240,7 +238,8 @@ class Guild(Session):
     def hasMembers(self):
         if self.guildID not in Session.settings_ready["guilds"]:
             return False
-        return len(Session.settings_ready["guilds"][self.guildID]["members"]) >= 0
+        return len(
+            Session.settings_ready["guilds"][self.guildID]["members"]) >= 0
 
     @property
     def members(self):
@@ -254,20 +253,19 @@ class Guild(Session):
         Session.settings_ready["guilds"][self.guildID]["members"] = {}
 
     def updateOneMember(self, userID, userProperties):
-        Session.settings_ready["guilds"][self.guildID]["members"][
-            userID
-        ] = userProperties
+        Session.settings_ready["guilds"][
+            self.guildID]["members"][userID] = userProperties
 
     def updateMembers(
         self, memberdata
     ):  # where member data is a dictionary --> {userId: {properties}, ...}
-        Session.settings_ready["guilds"][self.guildID]["members"].update(memberdata)
+        Session.settings_ready["guilds"][self.guildID]["members"].update(
+            memberdata)
 
     @property
     def owner(self):
         return Session.settings_ready["guilds"][self.guildID][
-            "owner_id"
-        ]  # returns type int
+            "owner_id"]  # returns type int
 
     @property
     def boostLvl(self):
@@ -289,25 +287,27 @@ class Guild(Session):
     def discoverySplash(
         self,
     ):  # not sure what this is about, something about server discoverability i guess (https://discord.com/developers/docs/resources/guild)
-        return Session.settings_ready["guilds"][self.guildID]["discovery_splash"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["discovery_splash"]
 
     @property
     def msgNotificationSettings(
         self,
     ):  # returns an int, 0=all messages, 1=only mentions (https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level)
-        return Session.settings_ready["guilds"][self.guildID][
-            "default_message_notifications"
-        ]
+        return Session.settings_ready["guilds"][
+            self.guildID]["default_message_notifications"]
 
     @property
     def rulesChannelID(self):
-        return Session.settings_ready["guilds"][self.guildID]["rules_channel_id"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["rules_channel_id"]
 
     @property
     def verificationLvl(
         self,
     ):  # returns an int, 0-4 (https://discord.com/developers/docs/resources/guild#guild-object-verification-level)
-        return Session.settings_ready["guilds"][self.guildID]["verification_level"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["verification_level"]
 
     @property
     def features(
@@ -334,7 +334,9 @@ class Guild(Session):
         return Session.settings_ready["guilds"][self.guildID]["afk_channel_id"]
 
     @property
-    def icon(self):  # https://discord.com/developers/docs/reference#image-formatting
+    def icon(
+        self
+    ):  # https://discord.com/developers/docs/reference#image-formatting
         return Session.settings_ready["guilds"][self.guildID]["icon"]
 
     @property
@@ -343,7 +345,8 @@ class Guild(Session):
 
     @property
     def maxVideoChannelUsers(self):
-        return Session.settings_ready["guilds"][self.guildID]["max_video_channel_users"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["max_video_channel_users"]
 
     @property
     def roles(
@@ -353,15 +356,15 @@ class Guild(Session):
 
     @property
     def publicUpdatesChannelID(self):
-        return Session.settings_ready["guilds"][self.guildID][
-            "public_updates_channel_id"
-        ]
+        return Session.settings_ready["guilds"][
+            self.guildID]["public_updates_channel_id"]
 
     @property
     def systemChannelFlags(
         self,
     ):  # https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
-        return Session.settings_ready["guilds"][self.guildID]["system_channel_flags"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["system_channel_flags"]
 
     @property
     def mfaLvl(
@@ -376,14 +379,16 @@ class Guild(Session):
         return Session.settings_ready["guilds"][self.guildID]["afk_timeout"]
 
     @property
-    def hashes(self):  # https://github.com/discord/discord-api-docs/issues/1642
+    def hashes(
+            self):  # https://github.com/discord/discord-api-docs/issues/1642
         return Session.settings_ready["guilds"][self.guildID]["guild_hashes"]
 
     @property
     def systemChannelID(
         self,
     ):  # returns an int, the id of the channel where guild notices such as welcome messages and boost events are posted
-        return Session.settings_ready["guilds"][self.guildID]["system_channel_id"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["system_channel_id"]
 
     @property
     def lazy(
@@ -393,9 +398,8 @@ class Guild(Session):
 
     @property
     def numBoosts(self):  # get number of boosts the server has gotten
-        return Session.settings_ready["guilds"][self.guildID][
-            "premium_subscription_count"
-        ]
+        return Session.settings_ready["guilds"][
+            self.guildID]["premium_subscription_count"]
 
     @property
     def large(
@@ -411,7 +415,8 @@ class Guild(Session):
     def explicitContentFilter(
         self,
     ):  # https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level
-        return Session.settings_ready["guilds"][self.guildID]["explicit_content_filter"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["explicit_content_filter"]
 
     @property
     def splashHash(self):  # not sure what this is for
@@ -427,28 +432,28 @@ class Guild(Session):
 
     @property
     def vanityUrlCode(self):
-        return Session.settings_ready["guilds"][self.guildID]["vanity_url_code"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["vanity_url_code"]
 
     @property
     def preferredLocale(self):
-        return Session.settings_ready["guilds"][self.guildID]["preferred_locale"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["preferred_locale"]
 
     def updateChannelData(
-        self, channelID, channelData
-    ):  # can also be used to update categories
-        Session.settings_ready["guilds"][self.guildID]["channels"][channelID].update(
-            channelData
-        )
+            self, channelID,
+            channelData):  # can also be used to update categories
+        Session.settings_ready["guilds"][
+            self.guildID]["channels"][channelID].update(channelData)
 
-    def setChannelData(
-        self, channelID, channelData
-    ):  # can also be used to update categories
-        Session.settings_ready["guilds"][self.guildID]["channels"][
-            channelID
-        ] = channelData
+    def setChannelData(self, channelID,
+                       channelData):  # can also be used to update categories
+        Session.settings_ready["guilds"][
+            self.guildID]["channels"][channelID] = channelData
 
     def removeChannelData(self, channelID):
-        Session.settings_ready["guilds"][self.guildID]["channels"].pop(channelID, None)
+        Session.settings_ready["guilds"][self.guildID]["channels"].pop(
+            channelID, None)
 
     @property
     def channelsAndCategories(
@@ -458,25 +463,22 @@ class Guild(Session):
 
     @property
     def allChannelAndCategoryIDs(
-        self,
-    ):  # all of them, even ones you've been removed from
+        self, ):  # all of them, even ones you've been removed from
         return list(self.channelsAndCategories)
 
     @property
     def channelAndCategoryIDs(self):
         return [
-            channelID
-            for channelID in self.channelsAndCategories
+            channelID for channelID in self.channelsAndCategories
             if "removed" not in self.channelsAndCategories[channelID]
         ]
 
     @property
-    def categories(self):  # all data about guild categories, can be overwhelming
+    def categories(
+            self):  # all data about guild categories, can be overwhelming
         all_categories = {}
-        for (
-            i
-        ) in (
-            self.channelsAndCategories
+        for (i) in (
+                self.channelsAndCategories
         ):  # https://discord.com/developers/docs/resources/channel#channel-object-channel-types
             if self.channelsAndCategories[i]["type"] in ("guild_category", 4):
                 all_categories[i] = self.channelsAndCategories[i]
@@ -490,14 +492,14 @@ class Guild(Session):
         return self.categories[categoryID]
 
     @property
-    def channels(self):  # all data about all guild channels, can be overwhelming
+    def channels(
+            self):  # all data about all guild channels, can be overwhelming
         all_channels = {}
-        for (
-            i
-        ) in (
-            self.channelsAndCategories
+        for (i) in (
+                self.channelsAndCategories
         ):  # https://discord.com/developers/docs/resources/channel#channel-object-channel-types
-            if self.channelsAndCategories[i]["type"] not in ("guild_category", 4):
+            if self.channelsAndCategories[i]["type"] not in ("guild_category",
+                                                             4):
                 all_channels[i] = self.channelsAndCategories[i]
         return all_channels
 
@@ -521,8 +523,7 @@ class Guild(Session):
     @property
     def applicationCommandCount(self):
         return Session.settings_ready["guilds"][self.guildID].get(
-            "application_command_count"
-        )
+            "application_command_count")
 
     @property
     def maxMembers(self):
@@ -530,7 +531,8 @@ class Guild(Session):
 
     @property
     def stages(self):
-        return Session.settings_ready["guilds"][self.guildID]["stage_instances"]
+        return Session.settings_ready["guilds"][
+            self.guildID]["stage_instances"]
 
     @property
     def stickers(self):
@@ -545,7 +547,9 @@ class Relationship(Session):  # not the same organization as class guild
         self.userID = userID
 
     @property
-    def data(self):  # usernames and discriminators are no longer provided in this data
+    def data(
+        self
+    ):  # usernames and discriminators are no longer provided in this data
         return Session.settings_ready["relationships"][self.userID]
 
 
@@ -579,10 +583,10 @@ class UserGuildSetting(Session):
     def data(self):
         if len(Session.settings_ready["user_guild_settings"]["entries"]) == 0:
             return None
-        for i in range(len(Session.settings_ready["user_guild_settings"]["entries"])):
-            if (
-                Session.settings_ready["user_guild_settings"]["entries"][i]["guild_id"]
-                == self.guildID
-            ):
-                return Session.settings_ready["user_guild_settings"]["entries"][i]
+        for i in range(
+                len(Session.settings_ready["user_guild_settings"]["entries"])):
+            if (Session.settings_ready["user_guild_settings"]["entries"][i]
+                ["guild_id"] == self.guildID):
+                return Session.settings_ready["user_guild_settings"][
+                    "entries"][i]
         return None

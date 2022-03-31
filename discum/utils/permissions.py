@@ -15,8 +15,7 @@ class PERMS:
     ADD_REACTIONS = 1 << 6  #      Allows for the addition of reactions to messages
     VIEW_AUDIT_LOG = 1 << 7  #      Allows for viewing of audit logs
     PRIORITY_SPEAKER = (
-        1 << 8
-    )  #      Allows for using priority speaker in a voice channel
+        1 << 8)  #      Allows for using priority speaker in a voice channel
     STREAM = 1 << 9  #      Allows the user to go live
     VIEW_CHANNEL = (
         1 << 10
@@ -35,8 +34,7 @@ class PERMS:
         1 << 17
     )  #     Allows for using the @everyone tag to notify all users in a channel, and the @here tag to notify all online users in a channel
     USE_EXTERNAL_EMOJIS = (
-        1 << 18
-    )  #     Allows the usage of custom emojis from other servers
+        1 << 18)  #     Allows the usage of custom emojis from other servers
     VIEW_GUILD_INSIGHTS = 1 << 19  #     Allows for viewing guild insights
     CONNECT = 1 << 20  #     Allows for joining of a voice channel
     SPEAK = 1 << 21  #     Allows for speaking in a voice channel
@@ -51,8 +49,7 @@ class PERMS:
     MANAGE_ROLES = 1 << 28  #     Allows management and editing of roles
     MANAGE_WEBHOOKS = 1 << 29  #     Allows management and editing of webhooks
     MANAGE_EMOJIS_AND_STICKERS = (
-        1 << 30
-    )  #     Allows management and editing of emojis and stickers
+        1 << 30)  #     Allows management and editing of emojis and stickers
     USE_APPLICATION_COMMANDS = (
         1 << 31
     )  #     Allows members to use application commands, including slash commands and context menu commands
@@ -66,8 +63,7 @@ class PERMS:
     CREATE_PUBLIC_THREADS = 1 << 35  #     Allows for creating threads
     CREATE_PRIVATE_THREADS = 1 << 36  #     Allows for creating private threads
     USE_EXTERNAL_STICKERS = (
-        1 << 37
-    )  #     Allows the usage of custom stickers from other servers
+        1 << 37)  #     Allows the usage of custom stickers from other servers
     SEND_MESSAGES_IN_THREADS = 1 << 38  #     Allows for sending messages in threads
     START_EMBEDDED_ACTIVITIES = (
         1 << 39
@@ -132,7 +128,8 @@ class Permissions:
 
     # copied the code from https://discord.com/developers/docs/topics/permissions#permission-overwrites and played around with it
     @staticmethod
-    def calculateBasePerms(memberID, guildID, guildOwnerID, guildRoles, memberRoles):
+    def calculateBasePerms(memberID, guildID, guildOwnerID, guildRoles,
+                           memberRoles):
         if memberID == guildOwnerID:
             return PERMS.ALL
 
@@ -147,17 +144,16 @@ class Permissions:
         return permissions
 
     @staticmethod
-    def calculateOverwrites(
-        memberID, guildID, basePermissions, channelOverwrites, memberRoles
-    ):
+    def calculateOverwrites(memberID, guildID, basePermissions,
+                            channelOverwrites, memberRoles):
         # ADMINISTRATOR overrides any potential permission overwrites, so there is nothing to do here.
         if basePermissions & PERMS.ADMINISTRATOR == PERMS.ADMINISTRATOR:
             return PERMS.ALL
 
         permissions = basePermissions
         channelEveryoneOverwrites = next(
-            (i for i in channelOverwrites if i["id"] == guildID), False
-        )  # https://stackoverflow.com/a/8653568/14776493
+            (i for i in channelOverwrites if i["id"] == guildID),
+            False)  # https://stackoverflow.com/a/8653568/14776493
         if channelEveryoneOverwrites:
             permissions &= ~int(channelEveryoneOverwrites["deny"])
             permissions |= int(channelEveryoneOverwrites["allow"])
@@ -167,8 +163,8 @@ class Permissions:
         deny = 0
         for memberRoleID in memberRoles:  # for the pertinent roles
             overwriteRole = next(
-                (i for i in channelOverwrites if i["id"] == memberRoleID), False
-            )  # get the corresponding channel overrides
+                (i for i in channelOverwrites if i["id"] == memberRoleID),
+                False)  # get the corresponding channel overrides
             if overwriteRole:
                 allow |= int(overwriteRole["allow"])
                 deny |= int(overwriteRole["deny"])
@@ -178,8 +174,7 @@ class Permissions:
 
         # Apply member specific overwrite if it exist.
         overwriteMember = next(
-            (i for i in channelOverwrites if i["id"] == memberID), False
-        )
+            (i for i in channelOverwrites if i["id"] == memberID), False)
         if overwriteMember:
             permissions &= ~int(overwriteMember["deny"])
             permissions |= int(overwriteMember["allow"])
@@ -188,11 +183,11 @@ class Permissions:
 
     @staticmethod
     def calculatePermissions(
-        memberID, guildID, guildOwnerID, guildRoles, memberRoles, channelOverwrites
+        memberID, guildID, guildOwnerID, guildRoles, memberRoles,
+        channelOverwrites
     ):  # guildRoles (dictionary), memberRoles(list of strings), channelOverwrites (list of dictionaries)
         basePermissions = Permissions.calculateBasePerms(
-            memberID, guildID, guildOwnerID, guildRoles, memberRoles
-        )
-        return Permissions.calculateOverwrites(
-            memberID, guildID, basePermissions, channelOverwrites, memberRoles
-        )
+            memberID, guildID, guildOwnerID, guildRoles, memberRoles)
+        return Permissions.calculateOverwrites(memberID, guildID,
+                                               basePermissions,
+                                               channelOverwrites, memberRoles)

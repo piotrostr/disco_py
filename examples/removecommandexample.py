@@ -5,7 +5,8 @@ bot = discum.Client(token="ur token")
 
 @bot.gateway.command
 def example(resp):
-    if resp.raw["t"] == "MESSAGE_CREATE":  # if you want to play with the raw response
+    if resp.raw[
+            "t"] == "MESSAGE_CREATE":  # if you want to play with the raw response
         print("Detected a message")
         bot.gateway.removeCommand(
             example

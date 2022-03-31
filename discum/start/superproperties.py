@@ -15,11 +15,17 @@ class SuperProperties:
 
     __slots__ = ["s", "editedS", "buildnum", "log"]
 
-    def __init__(self, s, buildnum="request", log={"console": True, "file": False}):
+    def __init__(self,
+                 s,
+                 buildnum="request",
+                 log={
+                     "console": True,
+                     "file": False
+                 }):
         self.s = s
-        self.editedS = Wrapper.editedReqSession(
-            s, {"remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]}
-        )
+        self.editedS = Wrapper.editedReqSession(s, {
+            "remove": ["Authorization", "X-Super-Properties", "X-Fingerprint"]
+        })
         self.buildnum = buildnum
         self.log = log
 
@@ -47,28 +53,26 @@ class SuperProperties:
 
             # fastest solution I could find since the last js file is huge in comparison to 2nd from last
             file_with_build_num = (
-                "https://discord.com/assets/"
-                + re.compile(r"assets/+([a-z0-9]+)\.js").findall(
-                    discord_login_page_exploration
-                )[-2]
-                + ".js"
-            )
+                "https://discord.com/assets/" +
+                re.compile(r"assets/+([a-z0-9]+)\.js").findall(
+                    discord_login_page_exploration)[-2] + ".js")
             req_file_build = Wrapper.sendRequest(
-                self.editedS, "get", file_with_build_num, log=False
-            ).text  # log set to False cause this is a big file
+                self.editedS, "get", file_with_build_num,
+                log=False).text  # log set to False cause this is a big file
             index_of_build_num = req_file_build.find("buildNumber") + 24
             discord_build_num = int(
-                req_file_build[index_of_build_num : index_of_build_num + 6]
-            )
+                req_file_build[index_of_build_num:index_of_build_num + 6])
 
             Logger.log(
-                "Discord is currently on build number " + str(discord_build_num),
+                "Discord is currently on build number " +
+                str(discord_build_num),
                 None,
                 self.log,
             )
             return discord_build_num
         except Exception as e:
-            Logger.log("Could not retrieve discord build number.", None, self.log)
+            Logger.log("Could not retrieve discord build number.", None,
+                       self.log)
             Logger.log(e, None, self.log)
             return None
 
