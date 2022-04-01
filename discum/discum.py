@@ -19,11 +19,26 @@ imports = Imports({
 
 # other imports
 import base64
+import os
 import json
 import requests
 import re
 import random
 from ua_parser import user_agent_parser
+
+
+def useZyteProxy(session: requests.Session):
+    """
+    wrapper around requests session to use zyte proxy
+    """
+    proxy_auth = f"{os.environ.get('ZYTE_KEY')}:"
+    session.proxies.update({
+        "http": f"http://{proxy_auth}@proxy.zyte.com:8011",
+        "https": f"http://{proxy_auth}@proxy.zyte.com:8011"
+    })
+    
+    session.verify = "zyte-smartproxy-ca.crt"
+    return session
 
 
 # client initialization
@@ -135,6 +150,8 @@ class Client:
         # step 4: proxies
         self.switchProxy(proxy, updateGateway=False)  # gateway proxies updated on step 8
 
+        self.s = useZyteProxy(self.s)
+
         # step 5: cookies
         self.s.cookies.update({"locale": self.locale})
 
@@ -182,11 +199,10 @@ class Client:
         # step 9: somewhat prepare for science events
         self.Science = ""
 
-    """
-    test token
-    """
-
     def checkToken(self, token):
+        """
+        test token
+        """
         editedS = imports.Wrapper().editedReqSession(
             self.s, {"update": {
                 "Authorization": token
@@ -206,21 +222,19 @@ class Client:
         else:
             return (False, False)
 
-    """
-    switch account
-    """
-
     def switchAccount(self, newToken):
+        """
+        switch account
+        """
         self.__user_token = newToken
         self.s.headers["Authorization"] = newToken
         self.gateway.token = newToken
         self.gateway.auth["token"] = newToken
 
-    """
-    switch proxy
-    """
-
     def switchProxy(self, newProxy, updateGateway=True):
+        """
+        switch proxy
+        """
         if newProxy is None:
             self.s.proxies = {}
             self.s.auth = None
