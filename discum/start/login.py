@@ -4,7 +4,6 @@ import string
 import base64
 
 from ..RESTapiwrap import Wrapper
-from ..logger import Logger
 
 from ..utils.totp import TOTP
 from ..utils.contextproperties import ContextProperties

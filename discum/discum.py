@@ -17,9 +17,6 @@ imports = Imports({
     "Buttons": "discum.interactions.buttons",
 })
 
-# logging to console/file
-# from .logger import LogLevel, Logger
-
 # other imports
 import base64
 import json
@@ -136,8 +133,7 @@ class Client:
         self.s.headers.update(headers)
 
         # step 4: proxies
-        self.switchProxy(
-            proxy, updateGateway=False)  # gateway proxies updated on step 8
+        self.switchProxy(proxy, updateGateway=False)  # gateway proxies updated on step 8
 
         # step 5: cookies
         self.s.cookies.update({"locale": self.locale})
@@ -186,7 +182,6 @@ class Client:
         # step 9: somewhat prepare for science events
         self.Science = ""
 
-    ##########################################################
     """
     test token
     """
