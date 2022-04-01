@@ -18,7 +18,7 @@ imports = Imports({
 })
 
 # logging to console/file
-from .logger import LogLevel, Logger
+# from .logger import LogLevel, Logger
 
 # other imports
 import base64
@@ -26,7 +26,7 @@ import json
 import requests
 import re
 import random
-import ua_parser.user_agent_parser
+from ua_parser import user_agent_parser
 
 
 # client initialization
@@ -91,7 +91,7 @@ class Client:
             self.__user_agent = user_agent
         else:
             self.__user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"  # https://discord-user-api.cf/api/v1/properties/web
-        parsed_ua = ua_parser.user_agent_parser.Parse(self.__user_agent)
+        parsed_ua = user_agent_parser.Parse(self.__user_agent)
 
         # step 3: http request headers
         headers = {
@@ -188,8 +188,8 @@ class Client:
 
     ##########################################################
     """
-	test token
-	"""
+    test token
+    """
 
     def checkToken(self, token):
         editedS = imports.Wrapper().editedReqSession(
@@ -212,8 +212,8 @@ class Client:
             return (False, False)
 
     """
-	switch account
-	"""
+    switch account
+    """
 
     def switchAccount(self, newToken):
         self.__user_token = newToken
@@ -222,8 +222,8 @@ class Client:
         self.gateway.auth["token"] = newToken
 
     """
-	switch proxy
-	"""
+    switch proxy
+    """
 
     def switchProxy(self, newProxy, updateGateway=True):
         if newProxy is None:
@@ -285,8 +285,8 @@ class Client:
                     self.gateway.proxy_auth = None
 
     """
-	discord snowflake to unix timestamp and back
-	"""
+    discord snowflake to unix timestamp and back
+    """
 
     def snowflake_to_unixts(self, snowflake):
         return (int(float(snowflake)) / 4194304 + 1420070400000) / 1000
@@ -295,8 +295,8 @@ class Client:
         return (int(float(unixts)) * 1000 - 1420070400000) * 4194304
 
     """
-	start
-	"""
+    start
+    """
 
     def login(
         self,
@@ -364,8 +364,8 @@ class Client:
         return self.ra.run(saveQrCode)
 
     """
-	Messages
-	"""
+    Messages
+    """
 
     # create DM
     def createDM(self, recipients):
@@ -625,8 +625,8 @@ class Client:
                                     provider, locale, media_format)
 
     """
-	Stickers
-	"""
+    Stickers
+    """
 
     def getStickers(self,
                     directoryID="758482250722574376",
@@ -650,8 +650,8 @@ class Client:
                                 self.log).getStickerPack(stickerPackID)
 
     """
-	User relationships
-	"""
+    User relationships
+    """
 
     # get relationships
     def getRelationships(self):
@@ -684,8 +684,8 @@ class Client:
                             self.log).blockUser(userID, location)
 
     """
-	Other user stuff
-	"""
+    Other user stuff
+    """
 
     def getProfile(self, userID, with_mutual_guilds=True, guildID=None):
         return imports.User(self.discord, self.s,
@@ -729,8 +729,8 @@ class Client:
         return imports.User(self.discord, self.s, self.log).getVoiceRegions()
 
     """
-	Profile edits
-	"""
+    Profile edits
+    """
 
     # set avatar
     def setAvatar(self, imagePath):
@@ -860,8 +860,8 @@ class Client:
         return result
 
     """
-	User Settings, continued
-	"""
+    User Settings, continued
+    """
 
     def setDMscanLvl(self, level=1):  # 0<=level<=2
         return imports.User(self.discord, self.s, self.log).setDMscanLvl(level)
@@ -1088,8 +1088,8 @@ class Client:
                             self.log).logout(provider, voip_provider)
 
     """
-	Guild/Server stuff
-	"""
+    Guild/Server stuff
+    """
 
     # get guild info from invite code
     def getInfoFromInviteCode(self,
@@ -1340,8 +1340,8 @@ class Client:
                              self.log).getGuildActivitiesConfig(guildID)
 
     """
-	Interactions
-	"""
+    Interactions
+    """
 
     # used when searching for slash commands in a dm w/a bot
     def getSlashCommands(self, applicationID):
@@ -1422,8 +1422,8 @@ class Client:
         )
 
     """
-	"Science", aka Discord's tracking endpoint (https://luna.gitlab.io/discord-unofficial-docs/science.html - "Discord argues that they need to collect the data in the case the User allows the usage of the data later on. Which in [luna's] opinion is complete bullshit. Have a good day.")
-	"""
+    "Science", aka Discord's tracking endpoint (https://luna.gitlab.io/discord-unofficial-docs/science.html - "Discord argues that they need to collect the data in the case the User allows the usage of the data later on. Which in [luna's] opinion is complete bullshit. Have a good day.")
+    """
 
     def initScience(self):
         try:
