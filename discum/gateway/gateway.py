@@ -28,6 +28,8 @@ imports = Imports({
     "UserCombo": "discum.gateway.user.combo",
 })
 
+from ..proxy import get_proxy_details
+
 
 # exceptions
 class InvalidSessionException(Exception):
@@ -160,16 +162,7 @@ class GatewayServer:
         self.RESTurl = RESTurl  # for helper http requests
         self.sessionobj = sessionobj  # for helper http requests
 
-        self.proxy_type, self.proxy_auth, self.proxy_host, self.proxy_port = [
-            None
-        ] * 4
-        if sessionobj and sessionobj.proxies:
-            self.proxy_type = proxy_type = list(sessionobj.proxies.keys())[0]
-            self.proxy_host, self.proxy_port = (
-                sessionobj.proxies[proxy_type].split("://")[-1].split(":"))
-            if sessionobj.auth:
-                self.proxy_auth = (sessionobj.auth.username,
-                                   sessionobj.auth.password)
+        self.proxy_type, self.proxy_auth, self.proxy_host, self.proxy_port = get_proxy_details()
 
         self.keepData = "guilds"  # keep data even after leaving "dms", "guilds", or "guild_channels"
         self.log = log

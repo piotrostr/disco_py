@@ -19,27 +19,13 @@ imports = Imports({
 
 # other imports
 import base64
-import os
 import json
 import requests
 import re
 import random
 from ua_parser import user_agent_parser
 
-
-def useZyteProxy(session: requests.Session):
-    """
-    wrapper around requests session to use zyte proxy
-    """
-    proxy_auth = f"{os.environ.get('ZYTE_KEY')}:"
-    session.proxies.update({
-        "http": f"http://{proxy_auth}@proxy.zyte.com:8011",
-        "https": f"http://{proxy_auth}@proxy.zyte.com:8011"
-    })
-    
-    session.verify = "zyte-smartproxy-ca.crt"
-    return session
-
+from .proxy import use_zyte_proxy
 
 # client initialization
 class Client:
@@ -150,7 +136,7 @@ class Client:
         # step 4: proxies
         self.switchProxy(proxy, updateGateway=False)  # gateway proxies updated on step 8
 
-        self.s = useZyteProxy(self.s)
+        self.s = use_zyte_proxy(self.s)
 
         # step 5: cookies
         self.s.cookies.update({"locale": self.locale})
