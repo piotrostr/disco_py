@@ -1,4 +1,3 @@
-import pytest
 from discum import Plug
 
 

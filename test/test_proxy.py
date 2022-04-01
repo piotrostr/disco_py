@@ -14,7 +14,6 @@ def user():
     plug.return_user(user)
 
 
-@pytest.mark.skip()
 def test_proxy_works():
     session = requests.Session()
     local_ip = session.get("https://httpbin.org/ip").json()["origin"]
@@ -23,7 +22,6 @@ def test_proxy_works():
     assert local_ip != proxy_ip
 
 
-@pytest.mark.skip()
 def test_proxy_works_on_client(user):
     session = requests.Session()
     local_ip = session.get("https://httpbin.org/ip").json()["origin"]
@@ -39,7 +37,6 @@ def test_get_crawlera_session():
     assert len(session_id) > 5
 
 
-@pytest.mark.skip()
 def test_proxy_is_persistant(user):
     client = Client(email=user["email"], password=user["password"], token=user["token"])
     uno = client.s.get("https://httpbin.org/ip").json()["origin"]
